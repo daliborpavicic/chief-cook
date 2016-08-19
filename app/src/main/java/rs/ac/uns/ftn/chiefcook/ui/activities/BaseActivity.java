@@ -8,24 +8,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rs.ac.uns.ftn.chiefcook.R;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String DRAWER_ITEM_ID_KEY = "drawer_item_id_key";
 
+    @BindView(R.id.drawer_layout)
     protected DrawerLayout drawerLayout;
+
+    @BindView(R.id.nav_view)
     protected NavigationView navigationView;
+
+    @BindView(R.id.content_frame)
     protected FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        ButterKnife.bind(this);
 
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
