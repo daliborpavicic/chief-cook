@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Chief Cook</string>
 
-    <string name="title_home">Home fragment</string>
-    <string name="title_recipes">Recipes fragment</string>
-    <string name="title_favorite_recipes">Favorite recipes fragment</string>
+    <string name="title_home">Home</string>
+    <string name="title_recipes">Recipes</string>
+    <string name="title_favorite_recipes">Favorites</string>
 </resources>
