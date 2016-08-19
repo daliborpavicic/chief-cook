@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.chiefcook.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,22 +18,34 @@ public class FragmentHolderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getLayoutInflater().inflate(R.layout.activity_fragment_holder, frameLayout);
-        Intent intent = getIntent();
-        int fragmentIndex = intent.getIntExtra(DRAWER_ITEM_ID_KEY, 0);
 
+        setupActionBar();
+        setTitle("");
+
+        int fragmentIndex = getIntent().getIntExtra(DRAWER_ITEM_ID_KEY, 0);
+
+        navigationView.getMenu().getItem(fragmentIndex).setChecked(true);
+
+        Fragment selectedFragment = selectFragment(fragmentIndex);
+        displayFragment(selectedFragment);
+    }
+
+    private void setupActionBar() {
         // Set a toolbar to replace the action bar.
         toolbar = (Toolbar) findViewById(R.id.toolbar_fragment_holder);
         setSupportActionBar(toolbar);
 
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_navigation_menu);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        setTitle("");
 
-        navigationView.getMenu().getItem(fragmentIndex).setChecked(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_action_navigation_menu);
+            actionBar.setHomeButtonEnabled(true);
+        }
+    }
 
+    private Fragment selectFragment(int fragmentIndex) {
         Fragment fragment;
 
         switch (fragmentIndex) {
@@ -48,6 +59,10 @@ public class FragmentHolderActivity extends BaseActivity {
                 fragment = new HomeFragment();
         }
 
+        return fragment;
+    }
+
+    private void displayFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
