@@ -20,6 +20,9 @@ public class FragmentHolderActivity extends BaseActivity {
         Intent intent = getIntent();
         int fragmentIndex = intent.getIntExtra(DRAWER_ITEM_ID_KEY, 0);
 
+
+        navigationView.getMenu().getItem(fragmentIndex).setChecked(true);
+
         Fragment fragment;
 
         switch (fragmentIndex) {
