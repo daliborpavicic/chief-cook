@@ -5,8 +5,9 @@
     </style>
 
     <style name="Base.AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
-
+        <!-- Disable action bar -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
 
