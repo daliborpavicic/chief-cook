@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@mipmap/ic_launcher"
+            android:checked="true"
+            android:title="@string/title_home" />
+        <item
+            android:id="@+id/recipes"
+            android:icon="@mipmap/ic_launcher"
+            android:checked="true"
+            android:title="@string/title_recipes" />
+        <item
+            android:id="@+id/favorite_recipes"
+            android:icon="@mipmap/ic_launcher"
+            android:checked="true"
+            android:title="@string/title_favorite_recipes" />
+
+    </group>
+
+</menu>
