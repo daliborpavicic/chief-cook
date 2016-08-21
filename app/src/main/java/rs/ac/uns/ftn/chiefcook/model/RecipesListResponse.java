@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.chiefcook.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,10 +8,28 @@ import java.util.List;
  */
 public class RecipesListResponse {
 
-    private List<Recipe> results;
+    private List<Recipe> results = new ArrayList<>();
+
+    private String baseUri;
 
     public List<Recipe> getResults() {
         return results;
+    }
+
+    public void setResults(List<Recipe> results) {
+        this.results = results;
+    }
+
+    public String getBaseUri() {
+        return baseUri;
+    }
+
+    public void setBaseUri(String baseUri) {
+        this.baseUri = baseUri;
+    }
+
+    public String buildImageUrl(String relativeImageUrl) {
+        return baseUri + relativeImageUrl;
     }
 
     @Override
