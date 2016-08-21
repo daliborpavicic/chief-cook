@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     tools:context="rs.ac.uns.ftn.chiefcook.ui.fragments.HomeFragment">
 
-    <TextView
-        android:id="@+id/recipes_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rvRecipes"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>
