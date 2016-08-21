@@ -8,24 +8,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
+import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
 
 /**
  * Created by daliborp on 21.8.16..
  */
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Recipe> recipes;
+    public static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
 
-    public RecipeAdapter(Context context, List<Recipe> recipes) {
+    private Context context;
+    private RecipesListResponse recipesListResponse;
+
+    public RecipeAdapter(Context context, RecipesListResponse recipesListResponse) {
         this.context = context;
-        this.recipes = recipes;
+        this.recipesListResponse = recipesListResponse;
     }
 
     @Override
@@ -38,15 +41,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Recipe recipe = recipes.get(position);
+        Recipe recipe = recipesListResponse.getResults().get(position);
+        String recipeImageUrl = recipesListResponse.buildImageUrl(recipe.getImage());
 
-        holder.ivRecipeImage.setImageResource(R.mipmap.ic_launcher);
         holder.tvRecipeTitle.setText(recipe.getTitle());
+        Picasso.with(context)
+                .load(recipeImageUrl)
+                .placeholder(R.drawable.ic_search)
+                .into(holder.ivRecipeImage);
     }
 
     @Override
     public int getItemCount() {
-        return recipes.size();
+        return recipesListResponse.getResults().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,8 +38,8 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     protected RecyclerView rvRecipes;
 
     private RecyclerView.Adapter recipeAdapter;
-    private List<Recipe> recipes;
     private RecipesService recipesService;
+    private RecipesListResponse recipesListResponse;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -51,7 +50,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         recipesService = SpoonacularApi.getRecipesService();
-        recipes = new ArrayList<>();
+        recipesListResponse = new RecipesListResponse();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         rvRecipes = (RecyclerView) rootView.findViewById(R.id.rvRecipes);
         getActivity().setTitle(R.string.title_home);
 
-        recipeAdapter = new RecipeAdapter(getActivity(), recipes);
+        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse);
         rvRecipes.setAdapter(recipeAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -91,7 +90,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     public boolean onQueryTextSubmit(String query) {
         Log.d(LOG_TAG, query);
 
-        recipes.clear();
+        recipesListResponse.getResults().clear();
         getRecipeMatches(query);
 
         return true;
@@ -103,18 +102,11 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         listCall.enqueue(new Callback<RecipesListResponse>() {
             @Override
             public void onResponse(Call<RecipesListResponse> call, Response<RecipesListResponse> response) {
-                RecipesListResponse recipesListResponse = response.body();
-                List<Recipe> recipeMatches = recipesListResponse.getResults();
+                List<Recipe> recipeResults = response.body().getResults();
+                String baseUri = response.body().getBaseUri();
 
-                Log.d(LOG_TAG, "Number of matched recipes: " + recipeMatches.size());
-
-                if (!recipeMatches.isEmpty()) {
-                    for (Recipe recipe: recipeMatches) {
-                        Log.d(LOG_TAG, recipe.getTitle());
-                    }
-                }
-
-                recipes.addAll(recipeMatches);
+                recipesListResponse.setResults(recipeResults);
+                recipesListResponse.setBaseUri(baseUri);
                 recipeAdapter.notifyDataSetChanged();
             }
 
