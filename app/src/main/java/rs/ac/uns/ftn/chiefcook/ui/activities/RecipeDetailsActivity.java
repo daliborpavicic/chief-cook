@@ -2,9 +2,13 @@ package rs.ac.uns.ftn.chiefcook.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +29,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     public static final String RECIPE_ID_KEY = "recipe_key";
 
+    private ShareActionProvider shareActionProvider;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -35,6 +41,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     protected ImageView tvRecipeImage;
 
     private RecipesService recipesService;
+
+    private String recipeName;
 
 
     @Override
@@ -64,6 +72,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 Picasso.with(RecipeDetailsActivity.this)
                         .load(recipe.getImage())
                         .into(tvRecipeImage);
+
+                recipeName = recipe.getTitle();
+                invalidateOptionsMenu(); // necessary to update share intent data
             }
 
             @Override
@@ -75,5 +86,22 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 failureToast.show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_recipe_details, menu);
+
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        shareActionProvider = (ShareActionProvider)
+                MenuItemCompat.getActionProvider(shareItem);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, recipeName);
+
+        shareActionProvider.setShareIntent(intent);
+
+        return true;
     }
 }
