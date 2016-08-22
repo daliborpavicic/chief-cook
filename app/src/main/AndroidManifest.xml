@@ -17,7 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.BaseActivity"></activity>
+        <activity android:name=".ui.activities.BaseActivity" />
+        <activity android:name=".ui.activities.RecipeDetailsActivity"
+            android:parentActivityName=".ui.activities.FragmentHolderActivity"></activity>
     </application>
 
 </manifest>
