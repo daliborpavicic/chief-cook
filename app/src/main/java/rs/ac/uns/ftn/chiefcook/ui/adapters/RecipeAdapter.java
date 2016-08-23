@@ -51,7 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         tvRecipeTitle.setText(recipe.getTitle());
         Picasso.with(context)
                 .load(recipeImageUrl)
-                .placeholder(R.drawable.ic_search)
+                .placeholder(R.drawable.ic_action_search)
                 .into(ivRecipeImage);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
