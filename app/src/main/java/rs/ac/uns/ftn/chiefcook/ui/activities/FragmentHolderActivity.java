@@ -40,11 +40,11 @@ public class FragmentHolderActivity extends BaseActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(R.mipmap.ic_launcher);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_action_drawer);
             actionBar.setHomeButtonEnabled(true);
         }
     }
+
 
     private Fragment selectFragment(int fragmentIndex) {
         Fragment fragment;
