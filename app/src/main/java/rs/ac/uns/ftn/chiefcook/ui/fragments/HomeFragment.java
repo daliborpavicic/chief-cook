@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,16 +31,20 @@ import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class HomeFragment extends Fragment
+        implements SearchView.OnQueryTextListener, FilterDialogFragment.FilterListener {
 
 
     public static final String LOG_TAG = HomeFragment.class.getSimpleName();
+    public static final String CUISINE_FILTER_KEY = "cuisine";
 
     protected RecyclerView rvRecipes;
 
     private RecyclerView.Adapter recipeAdapter;
     private RecipesService recipesService;
     private RecipesListResponse recipesListResponse;
+
+    private String filterCuisine;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -87,6 +92,19 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_filter:
+                FilterDialogFragment filterDialogFragment = new FilterDialogFragment();
+                filterDialogFragment.setTargetFragment(this, 0);
+                filterDialogFragment.show(getActivity().getSupportFragmentManager(), null);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d(LOG_TAG, query);
 
@@ -97,7 +115,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     private void getRecipeMatches(String query) {
-        Call<RecipesListResponse> listCall = recipesService.searchRecipes(query, 10, null, null, null, null, null, false, null);
+        Call<RecipesListResponse> listCall = recipesService.searchRecipes(query, 10, null, filterCuisine, null, null, null, false, null);
 
         listCall.enqueue(new Callback<RecipesListResponse>() {
             @Override
@@ -122,5 +140,12 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    @Override
+    public void onFilter(HashMap<String, String> filters) {
+        Log.d(LOG_TAG, filters.toString());
+
+        filterCuisine = filters.get(CUISINE_FILTER_KEY);
     }
 }
