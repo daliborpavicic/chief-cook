@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:title="@string/pref_enable_splash_screen"
+        android:key="@string/pref_enable_splash_screen_key"
+        android:summaryOff="@string/pref_enable_splash_screen_false"
+        android:summaryOn="@string/pref_enable_splash_screen_true"
+        android:defaultValue="@string/pref_enable_notifications_default" />
+</PreferenceScreen>
