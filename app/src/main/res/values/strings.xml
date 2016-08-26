@@ -1,14 +1,21 @@
 <resources>
     <string name="app_name">Chief Cook</string>
 
-    <string name="title_home">Home</string>
-    <string name="title_recipes">Recipes</string>
-    <string name="title_favorite_recipes">Favorites</string>
+    <string name="menu_title_home">Home</string>
+    <string name="menu_title_recipes">Recipes</string>
+    <string name="menu_title_favorite_recipes">Favorites</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
     <string name="action_filter">Filter</string>
 
     <string name="dialog_ok">Ok</string>
     <string name="dialog_cancel">Cancel</string>
+
+    <string name="pref_enable_splash_screen">Splash Screen</string>
+    <string name="pref_enable_splash_screen_key">enable_splash_screen</string>
+    <string name="pref_enable_splash_screen_true">Show on startup</string>
+    <string name="pref_enable_splash_screen_false">Disabled</string>
+    <string name="pref_enable_notifications_default" translatable="false">true</string>
+    <string name="menu_title_settings">Settings</string>
 
 </resources>
