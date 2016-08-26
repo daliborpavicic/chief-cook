@@ -24,7 +24,7 @@ public class FavoriteRecipesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favorite_recipes, container, false);
-        getActivity().setTitle(R.string.title_favorite_recipes);
+        getActivity().setTitle(R.string.menu_title_favorite_recipes);
 
         return rootView;
     }

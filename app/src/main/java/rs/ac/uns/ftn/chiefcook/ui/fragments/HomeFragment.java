@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         rvRecipes = (RecyclerView) rootView.findViewById(R.id.rvRecipes);
-        getActivity().setTitle(R.string.title_home);
+        getActivity().setTitle(R.string.menu_title_home);
 
         recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse);
         rvRecipes.setAdapter(recipeAdapter);

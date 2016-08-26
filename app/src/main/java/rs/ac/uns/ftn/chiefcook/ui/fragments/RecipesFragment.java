@@ -25,7 +25,7 @@ public class RecipesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
-        getActivity().setTitle(R.string.title_recipes);
+        getActivity().setTitle(R.string.menu_title_recipes);
 
         return rootView;
     }
