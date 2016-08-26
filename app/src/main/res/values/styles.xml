@@ -9,6 +9,9 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
+        <!-- required by android.support.v7.preference.PreferenceFragmentCompat -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
