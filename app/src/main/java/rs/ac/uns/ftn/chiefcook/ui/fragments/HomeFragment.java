@@ -37,6 +37,9 @@ public class HomeFragment extends Fragment
 
     public static final String LOG_TAG = HomeFragment.class.getSimpleName();
     public static final String CUISINE_FILTER_KEY = "cuisine";
+    public static final String DIET_FILTER_KEY = "diet";
+    public static final String INTOLERANCES_FILTER_KEY = "intolerances";
+    public static final String RECIPE_TYPES_FILTER_KEY = "recipeTypes";
 
     protected RecyclerView rvRecipes;
 
@@ -45,6 +48,9 @@ public class HomeFragment extends Fragment
     private RecipesListResponse recipesListResponse;
 
     private String filterCuisine;
+    private String filterDiet;
+    private String filterIntolerance;
+    private String filterRecipeType;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -115,7 +121,8 @@ public class HomeFragment extends Fragment
     }
 
     private void getRecipeMatches(String query) {
-        Call<RecipesListResponse> listCall = recipesService.searchRecipes(query, 10, null, filterCuisine, null, null, null, false, null);
+        Call<RecipesListResponse> listCall = recipesService.searchRecipes(query,
+                10, filterRecipeType, filterCuisine, filterDiet, null, filterIntolerance, false, null);
 
         listCall.enqueue(new Callback<RecipesListResponse>() {
             @Override
@@ -144,8 +151,9 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onFilter(HashMap<String, String> filters) {
-        Log.d(LOG_TAG, filters.toString());
-
         filterCuisine = filters.get(CUISINE_FILTER_KEY);
+        filterDiet = filters.get(DIET_FILTER_KEY);
+        filterIntolerance = filters.get(INTOLERANCES_FILTER_KEY);
+        filterRecipeType = filters.get(RECIPE_TYPES_FILTER_KEY);
     }
 }

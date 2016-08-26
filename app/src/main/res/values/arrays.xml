@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cuisines">
+        <item>all</item>
         <item>african</item>
         <item>chinese</item>
         <item>japanese</item>
@@ -27,6 +28,7 @@
         <item>latin american</item>
     </string-array>
     <string-array name="diets">
+        <item>all</item>
         <item>pescetarian</item>
         <item>lacto vegetarian</item>
         <item>ovo vegetarian</item>
@@ -34,6 +36,7 @@
         <item>vegetarian</item>
     </string-array>
     <string-array name="intolerances">
+        <item>all</item>
         <item>dairy</item>
         <item>egg</item>
         <item>gluten</item>
@@ -47,6 +50,7 @@
         <item>wheat</item>
     </string-array>
     <string-array name="recipeTypes">
+        <item>all</item>
         <item>main course</item>
         <item>side dish</item>
         <item>dessert</item>

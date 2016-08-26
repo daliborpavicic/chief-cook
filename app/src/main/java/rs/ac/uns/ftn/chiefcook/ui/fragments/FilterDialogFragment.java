@@ -26,6 +26,15 @@ public class FilterDialogFragment extends DialogFragment {
     @BindView(R.id.spCuisine)
     protected Spinner spCuisine;
 
+    @BindView(R.id.spDiets)
+    protected Spinner spDiets;
+
+    @BindView(R.id.spIntolerances)
+    protected Spinner spIntolerances;
+
+    @BindView(R.id.spRecipeTypes)
+    protected Spinner spRecipeTypes;
+
     private HashMap<String, String> filters;
     private FilterListener filterListener;
 
@@ -52,8 +61,9 @@ public class FilterDialogFragment extends DialogFragment {
 
         filters = new HashMap<>();
         filters.put(HomeFragment.CUISINE_FILTER_KEY, null);
-
-        filterListener.onFilter(filters);
+        filters.put(HomeFragment.DIET_FILTER_KEY, null);
+        filters.put(HomeFragment.INTOLERANCES_FILTER_KEY, null);
+        filters.put(HomeFragment.RECIPE_TYPES_FILTER_KEY, null);
     }
 
     @Override
@@ -70,7 +80,19 @@ public class FilterDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String selectedCuisine = (String) spCuisine.getSelectedItem();
-                        filters.put(HomeFragment.CUISINE_FILTER_KEY, selectedCuisine);
+                        String selectedDiet = (String) spDiets.getSelectedItem();
+                        String selectedIntolerance = (String) spIntolerances.getSelectedItem();
+                        String selectedRecipeType = (String) spRecipeTypes.getSelectedItem();
+
+                        filters.put(HomeFragment.CUISINE_FILTER_KEY,
+                                selectedCuisine.equals("all") ? null : selectedCuisine);
+                        filters.put(HomeFragment.DIET_FILTER_KEY,
+                                selectedDiet.equals("all") ? null : selectedDiet);
+                        filters.put(HomeFragment.INTOLERANCES_FILTER_KEY,
+                                selectedIntolerance.equals("all") ? null : selectedIntolerance);
+                        filters.put(HomeFragment.RECIPE_TYPES_FILTER_KEY,
+                                selectedRecipeType.equals("all") ? null : selectedRecipeType);
+
                         filterListener.onFilter(filters);
                     }
                 })
