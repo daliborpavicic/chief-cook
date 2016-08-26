@@ -26,4 +26,37 @@
         <item>caribbean</item>
         <item>latin american</item>
     </string-array>
+    <string-array name="diets">
+        <item>pescetarian</item>
+        <item>lacto vegetarian</item>
+        <item>ovo vegetarian</item>
+        <item>vegan</item>
+        <item>vegetarian</item>
+    </string-array>
+    <string-array name="intolerances">
+        <item>dairy</item>
+        <item>egg</item>
+        <item>gluten</item>
+        <item>peanut</item>
+        <item>sesame</item>
+        <item>seafood</item>
+        <item>shellfish</item>
+        <item>soy</item>
+        <item>sulfite</item>
+        <item>tree nut</item>
+        <item>wheat</item>
+    </string-array>
+    <string-array name="recipeTypes">
+        <item>main course</item>
+        <item>side dish</item>
+        <item>dessert</item>
+        <item>appetizer</item>
+        <item>salad</item>
+        <item>bread</item>
+        <item>breakfast</item>
+        <item>soup</item>
+        <item>beverage</item>
+        <item>sauce</item>
+        <item>drink</item>
+    </string-array>
 </resources>
