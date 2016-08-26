@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.chiefcook.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -18,6 +19,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         final TextView splashText = (TextView) findViewById(R.id.tvSplashText);
         final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);

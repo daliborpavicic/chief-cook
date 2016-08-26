@@ -69,6 +69,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             case R.id.favorite_recipes:
                 displayActivity(FragmentHolderActivity.class, 2);
                 return true;
+            case R.id.settings:
+                displayActivity(FragmentHolderActivity.class, 3);
+                return true;
             default:
                 return true;
         }

@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.chiefcook.ui.activities;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -10,6 +11,7 @@ import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.FavoriteRecipesFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.HomeFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.RecipesFragment;
+import rs.ac.uns.ftn.chiefcook.ui.fragments.SettingsFragment;
 
 public class FragmentHolderActivity extends BaseActivity {
 
@@ -19,6 +21,8 @@ public class FragmentHolderActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_fragment_holder, frameLayout);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         setupActionBar();
         setTitle("");
@@ -55,6 +59,9 @@ public class FragmentHolderActivity extends BaseActivity {
                 break;
             case 2:
                 fragment = new FavoriteRecipesFragment();
+                break;
+            case 3:
+                fragment = new SettingsFragment();
                 break;
             default:
                 fragment = new HomeFragment();
