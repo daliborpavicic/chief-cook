@@ -13,5 +13,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
+
+        getActivity().setTitle(R.string.menu_title_settings);
     }
 }
