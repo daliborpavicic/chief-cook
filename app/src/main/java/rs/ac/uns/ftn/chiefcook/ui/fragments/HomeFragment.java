@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment
 
     protected RecyclerView rvRecipes;
 
-    private RecyclerView.Adapter recipeAdapter;
+    private RecipeAdapter recipeAdapter;
     private RecipesService recipesService;
     private RecipesListResponse recipesListResponse;
 
@@ -70,7 +70,8 @@ public class HomeFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         rvRecipes = (RecyclerView) rootView.findViewById(R.id.rvRecipes);
 
-        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse);
+        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
+
         rvRecipes.setAdapter(recipeAdapter);
         rvRecipes.setHasFixedSize(true);
 
@@ -128,8 +129,11 @@ public class HomeFragment extends Fragment
                 List<Recipe> recipeResults = response.body().getResults();
                 String baseUri = response.body().getBaseUri();
 
-                recipesListResponse.setResults(recipeResults);
-                recipesListResponse.setBaseUri(baseUri);
+                recipeAdapter.setBaseImageUrl(baseUri);
+
+                recipesListResponse.getResults().clear();
+                recipesListResponse.getResults().addAll(recipeResults);
+
                 recipeAdapter.notifyDataSetChanged();
             }
 
