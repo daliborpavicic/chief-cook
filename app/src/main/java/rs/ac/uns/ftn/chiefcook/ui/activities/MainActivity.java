@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import butterknife.BindView;
@@ -27,10 +28,16 @@ import rs.ac.uns.ftn.chiefcook.ui.fragments.SettingsFragment;
  */
 public class MainActivity extends AppCompatActivity {
 
+    public static final String VISIBLE_FRAGMENT_TAG = "visible_fragment";
+    public static final String CURRENT_ITEM_ID_KEY = "currentItemId";
+
     @BindView(R.id.drawer_layout) protected DrawerLayout drawerLayout;
     @BindView(R.id.toolbar) protected Toolbar toolbar;
     @BindView(R.id.nvView) protected NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+
+    private int currentItemId = R.id.nav_home;
+    boolean addToBackStack = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,9 +56,46 @@ public class MainActivity extends AppCompatActivity {
         // Setup drawer view
         setupDrawerContent(nvDrawer);
 
+        final Menu nvDrawerMenu = nvDrawer.getMenu();
+
         if (savedInstanceState == null) {
-            selectDrawerItem(nvDrawer.getMenu().findItem(R.id.nav_home));
+            selectDrawerItem(nvDrawerMenu.findItem(R.id.nav_home));
+        } else {
+
+            currentItemId = savedInstanceState.getInt(CURRENT_ITEM_ID_KEY);
+            selectDrawerItem(nvDrawerMenu.findItem(currentItemId));
         }
+
+        // add all fragment transactions to the back stack, except the first one to avoid empty activity on a back button click
+        addToBackStack = true;
+
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        Fragment visibleFragment = fragmentManager.findFragmentByTag(VISIBLE_FRAGMENT_TAG);
+
+                        if (visibleFragment instanceof HomeFragment) {
+                            currentItemId = R.id.nav_home;
+                        }
+
+                        if (visibleFragment instanceof RecipesFragment) {
+                            currentItemId = R.id.nav_recipes;
+                        }
+
+                        if (visibleFragment instanceof FavoriteRecipesFragment) {
+                            currentItemId = R.id.nav_favorite_recipes;
+                        }
+
+                        if (visibleFragment instanceof SettingsFragment) {
+                            currentItemId = R.id.nav_settings;
+                        }
+
+                        setToolbarTitle(nvDrawer.getMenu().findItem(currentItemId));
+                        nvDrawer.setCheckedItem(currentItemId);
+                    }
+                });
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -70,10 +114,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
+        // update current item
+        currentItemId =  menuItem.getItemId();
+        Fragment fragment = createFragmentForMenuItem(currentItemId);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager
+                .beginTransaction()
+                .replace(R.id.flContent, fragment, VISIBLE_FRAGMENT_TAG)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
+        }
+
+        transaction.commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title. Use app name if home fragment is selected
+        setToolbarTitle(menuItem);
+        // Close the navigation drawer
+        drawerLayout.closeDrawers();
+    }
+
+    @Nullable
+    private Fragment createFragmentForMenuItem(int itemId) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass;
-        switch(menuItem.getItemId()) {
+        switch(itemId) {
             case R.id.nav_home:
                 fragmentClass = HomeFragment.class;
                 break;
@@ -96,26 +167,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.flContent, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        return fragment;
+    }
 
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title. Use app name if home fragment is selected
+    private void setToolbarTitle(MenuItem menuItem) {
         setTitle(menuItem.getItemId() == R.id.nav_home ?
                 getResources().getString(R.string.app_name) : menuItem.getTitle());
-        // Close the navigation drawer
-        drawerLayout.closeDrawers();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_ITEM_ID_KEY, currentItemId);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // This is necessary so that ActionBarDrawerToggle can handle being clicked
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
