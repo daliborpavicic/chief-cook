@@ -23,9 +23,7 @@ public class RecipesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
-        getActivity().setTitle(R.string.menu_title_recipes);
 
         return rootView;
     }
