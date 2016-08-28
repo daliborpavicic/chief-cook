@@ -19,16 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.FragmentHolderActivity">
+        <activity
+            android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.BaseActivity" />
         <activity android:name=".ui.activities.RecipeDetailsActivity"
-            android:parentActivityName=".ui.activities.FragmentHolderActivity">
+            android:parentActivityName=".ui.activities.MainActivity">
 
         </activity>
     </application>
