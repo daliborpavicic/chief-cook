@@ -72,8 +72,11 @@ public class HomeFragment extends Fragment
 
         recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse);
         rvRecipes.setAdapter(recipeAdapter);
+        rvRecipes.setHasFixedSize(true);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        int spanCount = 2;
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(getActivity(), spanCount, GridLayoutManager.VERTICAL, false);
         rvRecipes.setLayoutManager(gridLayoutManager);
 
         getRecipeMatches("egg");
