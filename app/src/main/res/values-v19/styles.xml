@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Base.AppTheme">
+        <!-- Slide drawer over status bar on API version 19 and above. -->
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+</resources>
