@@ -29,18 +29,12 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     public static final String RECIPE_ID_KEY = "recipe_key";
 
-    private ShareActionProvider shareActionProvider;
-
-    @BindView(R.id.toolbar)
-    protected Toolbar toolbar;
-
-    @BindView(R.id.tvRecipeTitle)
-    protected TextView tvRecipeTitle;
-
-    @BindView(R.id.ivRecipeImage)
-    protected ImageView tvRecipeImage;
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+    @BindView(R.id.tvRecipeTitle) protected TextView tvRecipeTitle;
+    @BindView(R.id.ivRecipeImage) protected ImageView tvRecipeImage;
 
     private RecipesService recipesService;
+    private ShareActionProvider shareActionProvider;
 
     private String recipeName;
 
