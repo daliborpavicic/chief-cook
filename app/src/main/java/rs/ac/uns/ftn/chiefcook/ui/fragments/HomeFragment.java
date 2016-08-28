@@ -4,7 +4,7 @@ package rs.ac.uns.ftn.chiefcook.ui.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -73,8 +73,10 @@ public class HomeFragment extends Fragment
         recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse);
         rvRecipes.setAdapter(recipeAdapter);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        rvRecipes.setLayoutManager(linearLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        rvRecipes.setLayoutManager(gridLayoutManager);
+
+        getRecipeMatches("egg");
 
         return rootView;
     }
