@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup drawer view
         setupDrawerContent(nvDrawer);
+
+        if (savedInstanceState == null) {
+            selectDrawerItem(nvDrawer.getMenu().findItem(R.id.nav_home));
+        }
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -93,12 +98,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.flContent, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
+        // Set action bar title. Use app name if home fragment is selected
+        setTitle(menuItem.getItemId() == R.id.nav_home ?
+                getResources().getString(R.string.app_name) : menuItem.getTitle());
         // Close the navigation drawer
         drawerLayout.closeDrawers();
     }
