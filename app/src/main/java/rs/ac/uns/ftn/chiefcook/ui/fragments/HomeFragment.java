@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.chiefcook.ui.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -26,6 +27,7 @@ import rs.ac.uns.ftn.chiefcook.api.RecipesService;
 import rs.ac.uns.ftn.chiefcook.api.SpoonacularApi;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
+import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeAdapter;
 
 /**
@@ -79,6 +81,15 @@ public class HomeFragment extends Fragment
         GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(getActivity(), spanCount, GridLayoutManager.VERTICAL, false);
         rvRecipes.setLayoutManager(gridLayoutManager);
+
+        recipeAdapter.setListener(new RecipeAdapter.Listener() {
+            @Override
+            public void onClick(int recipeId) {
+                Intent intent = new Intent(getActivity(), RecipeDetailsActivity.class);
+                intent.putExtra(RecipeDetailsActivity.RECIPE_ID_KEY, recipeId);
+                startActivity(intent);
+            }
+        });
 
         getRecipeMatches("egg");
 

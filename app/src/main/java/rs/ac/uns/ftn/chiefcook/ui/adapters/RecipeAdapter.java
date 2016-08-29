@@ -38,9 +38,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
     }
 
+    public interface Listener {
+        void onClick(int recipeId);
+    }
+
     private Context context;
     private List<Recipe> recipes;
     private String baseImageUrl;
+    private Listener listener;
 
     public RecipeAdapter(Context context, List<Recipe> recipes) {
         this.context = context;
@@ -59,13 +64,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Recipe recipe = recipes.get(position);
+        final Recipe recipe = recipes.get(position);
 
         holder.tvRecipeNameItem.setText(recipe.getTitle());
         holder.tvTimeItem.setText(String.valueOf(recipe.getReadyInMinutes()));
         Picasso.with(context)
                 .load(baseImageUrl + recipe.getImage())
                 .into(holder.ivRecipeImage);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClick(recipe.getId());
+            }
+        });
     }
 
     @Override
@@ -75,5 +87,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     public void setBaseImageUrl(String baseImageUrl) {
         this.baseImageUrl = baseImageUrl;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 }
