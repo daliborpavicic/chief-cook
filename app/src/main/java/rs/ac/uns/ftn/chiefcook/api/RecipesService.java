@@ -17,14 +17,14 @@ public interface RecipesService {
 
     @GET("/recipes/search")
     Call<RecipesListResponse> searchRecipes(@Query("query") String query,
-                                            @Query("number") Integer number,
+                                            @Query("number") Integer numberOfResults,
+                                            @Query("offset") Integer offset,
                                             @Query("type") String type,
                                             @Query("cuisine") String cuisine,
                                             @Query("diet") String diet,
                                             @Query("excludeIngredients") String excludeIngredients,
                                             @Query("intolerances") String intolerances,
-                                            @Query("limitLicense") Boolean limitLicense,
-                                            @Query("offset") Integer offset);
+                                            @Query("limitLicense") Boolean limitLicense);
 
     @GET("recipes/{id}/information")
     Call<Recipe> getRecipeInfo(@Path("id") Integer recipeId);

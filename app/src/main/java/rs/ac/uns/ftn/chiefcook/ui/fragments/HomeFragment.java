@@ -29,6 +29,7 @@ import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
 import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeAdapter;
+import rs.ac.uns.ftn.chiefcook.util.EndlessRecyclerViewScrollListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment
     private RecipesService recipesService;
     private RecipesListResponse recipesListResponse;
 
+    private String query = "egg";
     private String filterCuisine;
     private String filterDiet;
     private String filterIntolerance;
@@ -75,12 +77,20 @@ public class HomeFragment extends Fragment
         recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
 
         rvRecipes.setAdapter(recipeAdapter);
-        rvRecipes.setHasFixedSize(true);
+        rvRecipes.setHasFixedSize(true); // performance optimization for smoother scrolling
 
         int spanCount = 2;
         GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(getActivity(), spanCount, GridLayoutManager.VERTICAL, false);
         rvRecipes.setLayoutManager(gridLayoutManager);
+
+        rvRecipes.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                Log.d(LOG_TAG, "Current page = " + page);
+                getRecipeMatches(page);
+            }
+        });
 
         recipeAdapter.setListener(new RecipeAdapter.Listener() {
             @Override
@@ -91,7 +101,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        getRecipeMatches("egg");
+        getRecipeMatches(0);
 
         return rootView;
     }
@@ -103,6 +113,7 @@ public class HomeFragment extends Fragment
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint(getResources().getString(R.string.action_search_hint));
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -121,18 +132,25 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.d(LOG_TAG, query);
+    public boolean onQueryTextSubmit(String q) {
+        if (!query.equals(q)) {
+            query = q;
+            recipesListResponse.getResults().clear();
+            getRecipeMatches(0);
 
-        recipesListResponse.getResults().clear();
-        getRecipeMatches(query);
+            return true;
+        }
 
-        return true;
+        return false;
     }
 
-    private void getRecipeMatches(String query) {
-        Call<RecipesListResponse> listCall = recipesService.searchRecipes(query,
-                10, filterRecipeType, filterCuisine, filterDiet, null, filterIntolerance, false, null);
+    private void getRecipeMatches(int page) {
+        int numberOfResults = 10;
+
+        Call<RecipesListResponse> listCall = recipesService.searchRecipes(
+                query, numberOfResults, numberOfResults * page,
+                filterRecipeType, filterCuisine, filterDiet, null, filterIntolerance, false
+        );
 
         listCall.enqueue(new Callback<RecipesListResponse>() {
             @Override
@@ -140,10 +158,8 @@ public class HomeFragment extends Fragment
                 List<Recipe> recipeResults = response.body().getResults();
                 String baseUri = response.body().getBaseUri();
 
-                recipeAdapter.setBaseImageUrl(baseUri);
-
-                recipesListResponse.getResults().clear();
                 recipesListResponse.getResults().addAll(recipeResults);
+                recipeAdapter.setBaseImageUrl(baseUri);
 
                 recipeAdapter.notifyDataSetChanged();
             }
