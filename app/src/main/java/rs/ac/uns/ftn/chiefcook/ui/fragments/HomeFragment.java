@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment
 
     @BindView(R.id.rvRecipes) protected RecyclerView rvRecipes;
 
-
     private RecipeAdapter recipeAdapter;
     private RecipesService recipesService;
     private RecipesListResponse recipesListResponse;
