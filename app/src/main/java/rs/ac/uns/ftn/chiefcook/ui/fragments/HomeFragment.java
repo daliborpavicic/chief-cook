@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +46,8 @@ public class HomeFragment extends Fragment
     public static final String INTOLERANCES_FILTER_KEY = "intolerances";
     public static final String RECIPE_TYPES_FILTER_KEY = "recipeTypes";
 
-    protected RecyclerView rvRecipes;
+    @BindView(R.id.rvRecipes) protected RecyclerView rvRecipes;
+
 
     private RecipeAdapter recipeAdapter;
     private RecipesService recipesService;
@@ -72,7 +75,7 @@ public class HomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        rvRecipes = (RecyclerView) rootView.findViewById(R.id.rvRecipes);
+        ButterKnife.bind(this, rootView);
 
         recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
 
