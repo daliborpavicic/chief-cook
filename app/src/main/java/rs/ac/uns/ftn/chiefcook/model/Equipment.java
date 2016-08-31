@@ -63,4 +63,8 @@ public class Equipment {
         this.image = image;
     }
 
+    @Override
+    public String toString() {
+        return (name);
+    }
 }

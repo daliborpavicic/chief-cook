@@ -63,4 +63,8 @@ public class Ingredient {
         this.image = image;
     }
 
+    @Override
+    public String toString() {
+        return (name);
+    }
 }
