@@ -76,23 +76,16 @@ public class HomeFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
-        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
+        setupRecipeRecycler();
 
-        rvRecipes.setAdapter(recipeAdapter);
-        rvRecipes.setHasFixedSize(true); // performance optimization for smoother scrolling
+        getRecipeMatches(0);
 
+        return rootView;
+    }
+
+    private void setupRecipeRecycler() {
         int spanCount = 2;
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(getActivity(), spanCount, GridLayoutManager.VERTICAL, false);
-        rvRecipes.setLayoutManager(gridLayoutManager);
-
-        rvRecipes.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                Log.d(LOG_TAG, "Current page = " + page);
-                getRecipeMatches(page);
-            }
-        });
+        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
 
         recipeAdapter.setListener(new RecipeAdapter.Listener() {
             @Override
@@ -103,9 +96,19 @@ public class HomeFragment extends Fragment
             }
         });
 
-        getRecipeMatches(0);
+        rvRecipes.setAdapter(recipeAdapter);
+        rvRecipes.setHasFixedSize(true); // performance optimization for smoother scrolling
 
-        return rootView;
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+        rvRecipes.setLayoutManager(gridLayoutManager);
+
+        rvRecipes.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                Log.d(LOG_TAG, "Current page = " + page);
+                getRecipeMatches(page);
+            }
+        });
     }
 
     @Override
