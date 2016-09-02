@@ -39,7 +39,6 @@ import rs.ac.uns.ftn.chiefcook.util.EndlessRecyclerViewScrollListener;
 public class HomeFragment extends Fragment
         implements SearchView.OnQueryTextListener, FilterDialogFragment.FilterListener {
 
-
     public static final String LOG_TAG = HomeFragment.class.getSimpleName();
     public static final String CUISINE_FILTER_KEY = "cuisine";
     public static final String DIET_FILTER_KEY = "diet";
@@ -47,6 +46,7 @@ public class HomeFragment extends Fragment
     public static final String RECIPE_TYPES_FILTER_KEY = "recipeTypes";
 
     @BindView(R.id.rvRecipes) protected RecyclerView rvRecipes;
+    private SearchView searchView;
 
     private RecipeAdapter recipeAdapter;
     private RecipesService recipesService;
@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment
         inflater.inflate(R.menu.menu_home_fragment, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint(getResources().getString(R.string.action_search_hint));
 
