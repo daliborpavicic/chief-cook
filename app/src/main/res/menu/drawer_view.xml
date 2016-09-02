@@ -15,9 +15,6 @@
             android:id="@+id/nav_favorite_recipes"
             android:icon="@mipmap/ic_launcher"
             android:title="@string/menu_title_favorite_recipes" />
-    </group>
-
-    <group>
         <item
             android:id="@+id/nav_settings"
             android:icon="@mipmap/ic_launcher"
