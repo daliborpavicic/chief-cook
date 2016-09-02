@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import rs.ac.uns.ftn.chiefcook.model.AutocompleteRecipeSearchModel;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipeInstructionsItem;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
@@ -31,4 +32,10 @@ public interface RecipesService {
 
     @GET("recipes/{id}/analyzedInstructions")
     Call<List<RecipeInstructionsItem>> getAnalyzedRecipeInstructions(@Path("id") Integer recipeId);
+
+
+    @GET("recipes/autocomplete")
+    Call<List<AutocompleteRecipeSearchModel>> autocompleteRecipeSearch(@Query("query") String query,
+                                                                       @Query("number") Integer number);
+
 }
