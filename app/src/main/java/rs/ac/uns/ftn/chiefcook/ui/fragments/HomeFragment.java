@@ -27,10 +27,12 @@ import retrofit2.Response;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.api.RecipesService;
 import rs.ac.uns.ftn.chiefcook.api.SpoonacularApi;
+import rs.ac.uns.ftn.chiefcook.util.SearchSuggestionsCursor;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
 import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeAdapter;
+import rs.ac.uns.ftn.chiefcook.ui.adapters.SearchSuggestionAdapter;
 import rs.ac.uns.ftn.chiefcook.util.EndlessRecyclerViewScrollListener;
 
 /**
@@ -118,7 +120,13 @@ public class HomeFragment extends Fragment
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
+
         searchView.setQueryHint(getResources().getString(R.string.action_search_hint));
+
+        SearchSuggestionsCursor searchSuggestionsCursor = new SearchSuggestionsCursor();
+        searchSuggestionsCursor.addSearchSuggestions(new String[] {"first", "second", "third"});
+        SearchSuggestionAdapter suggestionAdapter = new SearchSuggestionAdapter(getActivity(), searchSuggestionsCursor);
+        searchView.setSuggestionsAdapter(suggestionAdapter);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -149,6 +157,11 @@ public class HomeFragment extends Fragment
         return false;
     }
 
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
     private void getRecipeMatches(int page) {
         int numberOfResults = 10;
 
@@ -176,11 +189,6 @@ public class HomeFragment extends Fragment
                 Log.d(LOG_TAG, localizedMessage);
             }
         });
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
     }
 
     @Override
