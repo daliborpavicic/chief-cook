@@ -13,7 +13,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cuisine" />
+        android:paddingTop="@dimen/filter_label_top_padding"
+        android:text="@string/filter_label_cuisine" />
 
     <Spinner
         android:id="@+id/spCuisine"
@@ -26,7 +27,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Diets" />
+        android:paddingTop="@dimen/filter_label_top_padding"
+        android:text="@string/filter_label_diets" />
 
     <Spinner
         android:id="@+id/spDiets"
@@ -39,7 +41,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Intolerances" />
+        android:paddingTop="@dimen/filter_label_top_padding"
+        android:text="@string/filter_label_intolerances" />
 
     <Spinner
         android:id="@+id/spIntolerances"
@@ -53,7 +56,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Types" />
+        android:paddingTop="@dimen/filter_label_top_padding"
+        android:text="@string/filter_label_types" />
 
     <Spinner
         android:id="@+id/spRecipeTypes"
