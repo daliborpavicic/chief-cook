@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.chiefcook.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,19 +29,21 @@ import retrofit2.Response;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.api.RecipesService;
 import rs.ac.uns.ftn.chiefcook.api.SpoonacularApi;
-import rs.ac.uns.ftn.chiefcook.util.SearchSuggestionsCursor;
+import rs.ac.uns.ftn.chiefcook.model.AutocompleteRecipeSearchModel;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
 import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeAdapter;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.SearchSuggestionAdapter;
 import rs.ac.uns.ftn.chiefcook.util.EndlessRecyclerViewScrollListener;
+import rs.ac.uns.ftn.chiefcook.util.SearchSuggestionsCursor;
+import rs.ac.uns.ftn.chiefcook.util.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment
-        implements SearchView.OnQueryTextListener, FilterDialogFragment.FilterListener {
+        implements SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, FilterDialogFragment.FilterListener {
 
     public static final String LOG_TAG = HomeFragment.class.getSimpleName();
     public static final String CUISINE_FILTER_KEY = "cuisine";
@@ -51,9 +55,12 @@ public class HomeFragment extends Fragment
     private SearchView searchView;
 
     private RecipeAdapter recipeAdapter;
+    private SearchSuggestionAdapter searchSuggestionAdapter;
+
     private RecipesService recipesService;
     private RecipesListResponse recipesListResponse;
 
+    private List<String> searchSuggestions;
     private String query = "egg";
     private String filterCuisine;
     private String filterDiet;
@@ -70,6 +77,7 @@ public class HomeFragment extends Fragment
         setHasOptionsMenu(true);
         recipesService = SpoonacularApi.getRecipesService();
         recipesListResponse = new RecipesListResponse();
+        searchSuggestions = new ArrayList<>();
     }
 
     @Override
@@ -80,9 +88,17 @@ public class HomeFragment extends Fragment
 
         setupRecipeRecycler();
 
+        searchSuggestionAdapter = setupSuggestionAdapter();
+
         getRecipeMatches(0);
 
         return rootView;
+    }
+
+    @NonNull
+    private SearchSuggestionAdapter setupSuggestionAdapter() {
+        return new SearchSuggestionAdapter(getActivity(),
+                new SearchSuggestionsCursor());
     }
 
     private void setupRecipeRecycler() {
@@ -120,13 +136,9 @@ public class HomeFragment extends Fragment
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-
+        searchView.setOnSuggestionListener(this);
         searchView.setQueryHint(getResources().getString(R.string.action_search_hint));
-
-        SearchSuggestionsCursor searchSuggestionsCursor = new SearchSuggestionsCursor();
-        searchSuggestionsCursor.addSearchSuggestions(new String[] {"first", "second", "third"});
-        SearchSuggestionAdapter suggestionAdapter = new SearchSuggestionAdapter(getActivity(), searchSuggestionsCursor);
-        searchView.setSuggestionsAdapter(suggestionAdapter);
+        searchView.setSuggestionsAdapter(searchSuggestionAdapter);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -145,20 +157,51 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public boolean onQueryTextSubmit(String q) {
-        if (!query.equals(q)) {
-            query = q;
-            recipesListResponse.getResults().clear();
-            getRecipeMatches(0);
+    public boolean onQueryTextSubmit(String queryText) {
+        query = queryText;
+        recipesListResponse.getResults().clear();
+        getRecipeMatches(0);
+        searchView.clearFocus();
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(final String newText) {
+        searchSuggestionAdapter.notifyDataSetInvalidated();
+
+        int minQueryLength = 2;
+        Log.d(LOG_TAG, "New query= " + newText);
+
+        if (newText.length() > minQueryLength) {
+            Call<List<AutocompleteRecipeSearchModel>> listCall = recipesService.autocompleteRecipeSearch(newText, 10);
+            listCall.enqueue(new Callback<List<AutocompleteRecipeSearchModel>>() {
+                @Override
+                public void onResponse(Call<List<AutocompleteRecipeSearchModel>> call,
+                                       Response<List<AutocompleteRecipeSearchModel>> response) {
+                    List<AutocompleteRecipeSearchModel> recipeAutocompletes = response.body();
+
+                    if (recipeAutocompletes.size() > 0) {
+                        SearchSuggestionsCursor searchSuggestionsCursor = new SearchSuggestionsCursor();
+                        searchSuggestions = Utils.mapToStringList(recipeAutocompletes);
+                        searchSuggestionsCursor.addSearchSuggestions(searchSuggestions);
+
+                        searchSuggestionAdapter.changeCursor(searchSuggestionsCursor);
+                    } else {
+                        Log.d(LOG_TAG, String.format("No search suggestions available for: %s", newText));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<AutocompleteRecipeSearchModel>> call,
+                                      Throwable t) {
+                    Log.e(LOG_TAG, t.getLocalizedMessage());
+                }
+            });
 
             return true;
         }
 
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
         return false;
     }
 
@@ -189,6 +232,18 @@ public class HomeFragment extends Fragment
                 Log.d(LOG_TAG, localizedMessage);
             }
         });
+    }
+
+    @Override
+    public boolean onSuggestionSelect(int position) {
+        return false;
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+        searchView.setQuery(searchSuggestions.get(position), true);
+        searchView.clearFocus();
+        return true;
     }
 
     @Override
