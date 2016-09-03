@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
  */
 public final class ChiefCookContract {
 
-    public static final String CONTENT_AUTHORITY = "rs.ac.uns.ftn.chiefcook.data";
+    public static final String CONTENT_AUTHORITY = "rs.ac.uns.ftn.chiefcook.provider";
 
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
