@@ -67,7 +67,7 @@ public class ChiefCookProvider extends ContentProvider {
                         ChiefCookContract.RecipeEntry.TABLE_NAME,
                         projection,
                         ChiefCookContract.RecipeEntry._ID + " = ?",
-                        new String[] { String.valueOf(_id) },
+                        new String[]{String.valueOf(_id)},
                         null,
                         null,
                         sortOrder
@@ -90,7 +90,7 @@ public class ChiefCookProvider extends ContentProvider {
                         ChiefCookContract.RecipeEntry.TABLE_NAME,
                         projection,
                         ChiefCookContract.RecipeEntry._ID + " = ?",
-                        new String[] { String.valueOf(_id) },
+                        new String[]{String.valueOf(_id)},
                         null,
                         null,
                         sortOrder
@@ -132,9 +132,9 @@ public class ChiefCookProvider extends ContentProvider {
             case RECIPE:
                 _id = db.insert(ChiefCookContract.RecipeEntry.TABLE_NAME, null, values);
 
-                if(_id > 0){
-                    returnUri =  ChiefCookContract.RecipeEntry.buildRecipeUri(_id);
-                } else{
+                if (_id > 0) {
+                    returnUri = ChiefCookContract.RecipeEntry.buildRecipeUri(_id);
+                } else {
                     throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
                 }
 
@@ -143,9 +143,9 @@ public class ChiefCookProvider extends ContentProvider {
             case INGREDIENT:
                 _id = db.insert(ChiefCookContract.IngredientEntry.TABLE_NAME, null, values);
 
-                if(_id > 0){
-                    returnUri =  ChiefCookContract.IngredientEntry.buildIngredientnUri(_id);
-                } else{
+                if (_id > 0) {
+                    returnUri = ChiefCookContract.IngredientEntry.buildIngredientnUri(_id);
+                } else {
                     throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
                 }
 
@@ -167,7 +167,7 @@ public class ChiefCookProvider extends ContentProvider {
         final SQLiteDatabase db = openHelper.getWritableDatabase();
         int rows; // Number of rows effected
 
-        switch(uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case RECIPE:
                 rows = db.delete(ChiefCookContract.RecipeEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -179,7 +179,7 @@ public class ChiefCookProvider extends ContentProvider {
         }
 
         // Because null could delete all rows:
-        if(selection == null || rows != 0){
+        if (selection == null || rows != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
@@ -191,7 +191,7 @@ public class ChiefCookProvider extends ContentProvider {
         final SQLiteDatabase db = openHelper.getWritableDatabase();
         int rows; // Number of rows effected
 
-        switch(uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case RECIPE:
                 rows = db.update(ChiefCookContract.RecipeEntry.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
@@ -202,10 +202,43 @@ public class ChiefCookProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        if(rows != 0){
+        if (rows != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return rows;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case INGREDIENT:
+                db.beginTransaction();
+                int returnCount = 0;
+
+                try {
+                    for (ContentValues value : values) {
+                        long insertedId = db.insert(ChiefCookContract.IngredientEntry.TABLE_NAME, null, value);
+                        if (insertedId != -1) {
+                            returnCount++;
+                        }
+                    }
+
+                    db.setTransactionSuccessful();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    db.endTransaction();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 }
