@@ -163,12 +163,49 @@ public class ChiefCookProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = openHelper.getWritableDatabase();
+        int rows; // Number of rows effected
+
+        switch(uriMatcher.match(uri)){
+            case RECIPE:
+                rows = db.delete(ChiefCookContract.RecipeEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case INGREDIENT:
+                rows = db.delete(ChiefCookContract.IngredientEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Because null could delete all rows:
+        if(selection == null || rows != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rows;
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = openHelper.getWritableDatabase();
+        int rows; // Number of rows effected
+
+        switch(uriMatcher.match(uri)){
+            case RECIPE:
+                rows = db.update(ChiefCookContract.RecipeEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                break;
+            case INGREDIENT:
+                rows = db.update(ChiefCookContract.IngredientEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if(rows != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rows;
     }
 }
