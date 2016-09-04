@@ -31,6 +31,12 @@
             android:parentActivityName=".ui.activities.MainActivity">
 
         </activity>
+        <provider
+            android:name=".data.ChiefCookProvider"
+            android:authorities="rs.ac.uns.ftn.chiefcook.provider"
+            android:exported="false"
+            android:protectionLevel="signature"
+            android:syncable="true"/>
     </application>
 
 </manifest>
