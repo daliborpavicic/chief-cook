@@ -20,6 +20,7 @@
     <string name="filter_label_diets">Diets</string>
     <string name="filter_label_intolerances">Intolerances</string>
     <string name="filter_label_types">Types</string>
+    <string name="step_label">Step</string>
 
 
 </resources>

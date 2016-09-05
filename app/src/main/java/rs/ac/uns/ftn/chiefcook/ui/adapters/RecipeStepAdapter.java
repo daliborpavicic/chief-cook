@@ -15,6 +15,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rs.ac.uns.ftn.chiefcook.R;
+import rs.ac.uns.ftn.chiefcook.model.Equipment;
+import rs.ac.uns.ftn.chiefcook.model.Ingredient;
 import rs.ac.uns.ftn.chiefcook.model.Step;
 
 /**
@@ -59,11 +61,17 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Step recipeStep = recipeSteps.get(position);
         int stepsCount = recipeSteps.size();
+        List<Equipment> equipment = recipeStep.getEquipment();
+        List<Ingredient> ingredients = recipeStep.getIngredients();
 
-        holder.tvStepNumber.setText(String.format("%s / %s", position + 1, stepsCount));
+        String stepLabel = context.getResources().getString(R.string.step_label);
+        String equipmentText = equipment.size() > 0 ? TextUtils.join(", ", equipment) : "-";
+        String ingredientsText = ingredients.size() > 0 ? TextUtils.join(" / ", ingredients) : "-";
+
+        holder.tvStepNumber.setText(String.format("%s %s / %s", stepLabel, position + 1, stepsCount));
         holder.tvStepDescription.setText(recipeStep.getStep());
-        holder.tvEquipment.setText(TextUtils.join(",", recipeStep.getEquipment()));
-        holder.tvIngredients.setText(TextUtils.join("/", recipeStep.getIngredients()));
+        holder.tvEquipment.setText(equipmentText);
+        holder.tvIngredients.setText(ingredientsText);
     }
 
     @Override
