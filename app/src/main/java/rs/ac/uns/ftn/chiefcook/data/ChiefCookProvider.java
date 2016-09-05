@@ -144,7 +144,7 @@ public class ChiefCookProvider extends ContentProvider {
                 _id = db.insert(ChiefCookContract.IngredientEntry.TABLE_NAME, null, values);
 
                 if (_id > 0) {
-                    returnUri = ChiefCookContract.IngredientEntry.buildIngredientnUri(_id);
+                    returnUri = ChiefCookContract.IngredientEntry.buildIngredientUri(_id);
                 } else {
                     throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
                 }
