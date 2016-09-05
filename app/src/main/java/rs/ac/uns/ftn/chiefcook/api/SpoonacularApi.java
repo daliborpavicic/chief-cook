@@ -5,6 +5,7 @@ import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.chiefcook.BuildConfig;
@@ -12,7 +13,7 @@ import rs.ac.uns.ftn.chiefcook.BuildConfig;
 /**
  * Created by daliborp on 20.8.16..
  */
-public class SpoonacularApi {
+public final class SpoonacularApi {
 
     private static final String BASE_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com";
 
@@ -39,6 +40,11 @@ public class SpoonacularApi {
 
         // Add the interceptor to OkHttpClient
         builder.interceptors().add(interceptor);
+
+        // Add interceptor to log HTTP traffic
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        builder.addInterceptor(logging);
 
         httpClient = builder.build();
     }
