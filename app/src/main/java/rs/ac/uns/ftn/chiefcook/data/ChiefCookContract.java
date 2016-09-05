@@ -60,7 +60,7 @@ public final class ChiefCookContract {
         public static final String COLUMN_API_ID = "ingredientApiId";
         public static final String COLUMN_RECIPE_ID = "recipeId";
 
-        public static Uri buildIngredientnUri(long id) {
+        public static Uri buildIngredientUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
