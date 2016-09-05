@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.chiefcook.ui.activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +55,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private Recipe recipe;
     private List<Step> recipeSteps;
-    private String recipeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +104,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                         .load(recipe.getImage())
                         .into(tvRecipeImage);
 
-                recipeName = recipe.getTitle();
-                collapsingToolbar.setTitle(recipeName);
+                collapsingToolbar.setTitle(recipe.getTitle());
 
                 invalidateOptionsMenu(); // necessary to update share intent data
             }
@@ -156,13 +155,27 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         shareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, recipeName);
-
-        shareActionProvider.setShareIntent(intent);
+        Intent shareIntent = createShareIntent();
+        shareActionProvider.setShareIntent(shareIntent);
 
         return true;
+    }
+
+    @NonNull
+    private Intent createShareIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+
+        // recipe is loaded from an API
+        if (recipe != null) {
+            String subject = recipe.getTitle();
+            String text = recipe.getSpoonacularSourceUrl();
+
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, text);
+        }
+
+        return intent;
     }
 
     @Override
