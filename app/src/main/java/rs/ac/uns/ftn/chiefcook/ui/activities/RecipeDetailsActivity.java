@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.chiefcook.ui.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -19,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +30,8 @@ import retrofit2.Response;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.api.RecipesService;
 import rs.ac.uns.ftn.chiefcook.api.SpoonacularApi;
+import rs.ac.uns.ftn.chiefcook.data.ChiefCookContract;
+import rs.ac.uns.ftn.chiefcook.model.ExtendedIngredient;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipeInstructionsItem;
 import rs.ac.uns.ftn.chiefcook.model.Step;
@@ -47,6 +51,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipesService recipesService;
     private RecipeStepAdapter recipeStepAdapter;
+
+    private Recipe recipe;
     private List<Step> recipeSteps;
     private String recipeName;
 
@@ -56,9 +62,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("");
+        setupToolbar();
 
         Intent intent = getIntent();
         final int recipeId = intent.getIntExtra(RECIPE_ID_KEY, 0);
@@ -78,13 +82,23 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         loadRecipeInstructions(recipeId);
     }
 
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        setTitle("");
+    }
+
     private void loadRecipe(int recipeId) {
         Call<Recipe> recipeInfoCall = recipesService.getRecipeInfo(recipeId);
 
         recipeInfoCall.enqueue(new Callback<Recipe>() {
             @Override
             public void onResponse(Call<Recipe> call, Response<Recipe> response) {
-                Recipe recipe = response.body();
+                recipe = response.body();
 
                 Picasso.with(RecipeDetailsActivity.this)
                         .load(recipe.getImage())
@@ -149,5 +163,62 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         shareActionProvider.setShareIntent(intent);
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.action_save) {
+            if (recipe != null) {
+                saveRecipe();
+                saveIngredientsForRecipe();
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveRecipe() {
+        ContentValues recipeValues = new ContentValues();
+        recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_TITLE, recipe.getTitle());
+        recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_READY_IN_MINUTES, recipe.getReadyInMinutes());
+        recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_IMAGE_URL, recipe.getImage());
+        recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_API_ID, recipe.getId());
+
+        getContentResolver().insert(ChiefCookContract.RecipeEntry.CONTENT_URI, recipeValues);
+    }
+
+    private void saveIngredientsForRecipe() {
+        Vector<ContentValues> cVVector = new Vector<>();
+        List<ExtendedIngredient> extendedIngredients = recipe.getExtendedIngredients();
+
+        for (ExtendedIngredient ingredient :
+                extendedIngredients) {
+            ContentValues ingredientValues = new ContentValues();
+
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_NAME, ingredient.getName());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_AMOUNT, ingredient.getAmount());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_IMAGE_URL, ingredient.getImage());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_API_ID, ingredient.getId());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_ORIGINAL_STRING, ingredient.getOriginalString());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_UNIT, ingredient.getUnit());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_UNIT_SHORT, ingredient.getUnitShort());
+            ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_RECIPE_ID, recipe.getId());
+
+            cVVector.add(ingredientValues);
+        }
+
+        int insertedCount = 0;
+
+        if (cVVector.size() > 0) {
+            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cvArray);
+
+            insertedCount = getContentResolver().bulkInsert(ChiefCookContract.IngredientEntry.CONTENT_URI, cvArray);
+        }
+
+        Log.d(LOG_TAG, insertedCount + " ingredients inserted.");
     }
 }
