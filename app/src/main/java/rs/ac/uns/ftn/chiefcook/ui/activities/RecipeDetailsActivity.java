@@ -185,7 +185,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         if (itemId == R.id.action_ingredients) {
             if (recipe != null) {
-                Toast.makeText(this, "Show dialog with ingredients", Toast.LENGTH_SHORT).show();
                 showIngredientsDialog();
                 return true;
             }
