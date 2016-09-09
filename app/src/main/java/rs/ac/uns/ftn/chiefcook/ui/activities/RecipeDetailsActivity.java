@@ -37,6 +37,7 @@ import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipeInstructionsItem;
 import rs.ac.uns.ftn.chiefcook.model.Step;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeStepAdapter;
+import rs.ac.uns.ftn.chiefcook.ui.fragments.IngredientsFragment;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -185,11 +186,21 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         if (itemId == R.id.action_ingredients) {
             if (recipe != null) {
                 Toast.makeText(this, "Show dialog with ingredients", Toast.LENGTH_SHORT).show();
+                showIngredientsDialog();
                 return true;
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showIngredientsDialog() {
+        if (recipe != null && recipe.getExtendedIngredients().size() > 0) {
+            IngredientsFragment ingredientsDialogFragment = IngredientsFragment.newInstance(
+                    (ArrayList<ExtendedIngredient>) recipe.getExtendedIngredients());
+
+            ingredientsDialogFragment.show(getSupportFragmentManager(), null);
+        }
     }
 
     private void saveRecipe() {
