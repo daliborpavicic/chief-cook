@@ -1,10 +1,15 @@
 package rs.ac.uns.ftn.chiefcook.ui.activities;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -49,6 +55,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @BindView(R.id.collapsing_toolbar) protected CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.ivRecipeImage) protected ImageView tvRecipeImage;
     @BindView(R.id.rvRecipeSteps) protected RecyclerView rvRecipeSteps;
+    @BindView(R.id.fabFavorite) protected FloatingActionButton fabFavorite;
 
     private ShareActionProvider shareActionProvider;
 
@@ -57,6 +64,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     private Recipe recipe;
     private List<Step> recipeSteps;
+    private boolean favoriteRecipe = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,27 +72,22 @@ public class RecipeDetailsActivity extends AppCompatActivity
         setContentView(R.layout.activity_recipe_details);
         ButterKnife.bind(this);
 
-        setupToolbar();
-
         Intent intent = getIntent();
         final int recipeId = intent.getIntExtra(RECIPE_ID_KEY, 0);
 
-        recipesService = SpoonacularApi.getRecipesService();
-        recipeSteps = new ArrayList<>();
-        recipeStepAdapter = new RecipeStepAdapter(this, recipeSteps);
+        initToolbar();
 
-        rvRecipeSteps.setAdapter(recipeStepAdapter);
+        initRecipeStepsView();
 
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        favoriteRecipe = isFavoriteRecipe(recipeId);
 
-        rvRecipeSteps.setLayoutManager(linearLayoutManager);
+        setFavoriteIcon(favoriteRecipe);
+        setFavoriteListener(recipeId);
 
-        loadRecipe(recipeId);
-        loadRecipeInstructions(recipeId);
+        loadRecipeData(recipeId);
     }
 
-    private void setupToolbar() {
+    private void initToolbar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -94,7 +97,52 @@ public class RecipeDetailsActivity extends AppCompatActivity
         setTitle("");
     }
 
-    private void loadRecipe(int recipeId) {
+    private void initRecipeStepsView() {
+        recipeSteps = new ArrayList<>();
+        recipeStepAdapter = new RecipeStepAdapter(this, recipeSteps);
+
+        rvRecipeSteps.setAdapter(recipeStepAdapter);
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        rvRecipeSteps.setLayoutManager(linearLayoutManager);
+    }
+
+    private void setFavoriteIcon(boolean favorite) {
+        if (favorite) {
+            fabFavorite.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.ic_favorite));
+        } else {
+            fabFavorite.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.ic_favorite_border));
+        }
+    }
+
+    private void setFavoriteListener(final int recipeId) {
+        fabFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favoriteRecipe) {
+                    deleteRecipe(recipeId);
+                    favoriteRecipe = false;
+                    setFavoriteIcon(favoriteRecipe);
+                } else {
+                    saveRecipe();
+                    favoriteRecipe = true;
+                    setFavoriteIcon(favoriteRecipe);
+                }
+            }
+        });
+    }
+
+    private void loadRecipeData(int recipeId) {
+        recipesService = SpoonacularApi.getRecipesService();
+        loadRecipeInfo(recipeId);
+        loadRecipeInstructions(recipeId);
+    }
+
+    private void loadRecipeInfo(int recipeId) {
         Call<Recipe> recipeInfoCall = recipesService.getRecipeInfo(recipeId);
 
         recipeInfoCall.enqueue(new Callback<Recipe>() {
@@ -210,7 +258,48 @@ public class RecipeDetailsActivity extends AppCompatActivity
         recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_IMAGE_URL, recipe.getImage());
         recipeValues.put(ChiefCookContract.RecipeEntry.COLUMN_API_ID, recipe.getId());
 
-        getContentResolver().insert(ChiefCookContract.RecipeEntry.CONTENT_URI, recipeValues);
+        Uri insertedUri = getContentResolver().insert(ChiefCookContract.RecipeEntry.CONTENT_URI, recipeValues);
+
+        Log.d(LOG_TAG, String.format("Inserted recipe URI: %s", insertedUri));
+    }
+
+    private boolean deleteRecipe(int recipeId) {
+        boolean deleted;
+        String whereClause = ChiefCookContract.RecipeEntry.COLUMN_API_ID + " = ? ";
+        String[] selectionArgs = new String[] { String.valueOf(recipeId) };
+
+        int deletedCount = getContentResolver().delete(
+                ChiefCookContract.RecipeEntry.CONTENT_URI,
+                whereClause,
+                selectionArgs
+        );
+
+        deleted = deletedCount > 0;
+
+        Log.d(LOG_TAG, String.format("%d recipes deleted.", deletedCount));
+
+        return deleted;
+    }
+
+    private boolean isFavoriteRecipe(Integer recipeId) {
+        boolean isFavorite;
+
+        ContentResolver contentResolver = getContentResolver();
+        String[] projection = { ChiefCookContract.RecipeEntry.COLUMN_API_ID };
+        String[] selectionArgs = { String.valueOf(recipeId) };
+
+        Cursor query = contentResolver.query(
+                ChiefCookContract.RecipeEntry.CONTENT_URI,
+                projection,
+                ChiefCookContract.RecipeEntry.COLUMN_API_ID + " = ? ",
+                selectionArgs,
+                null
+        );
+
+        isFavorite = query.getCount() > 0;
+        Log.d(LOG_TAG, String.format("Recipe is favorite: %s", isFavorite));
+
+        return isFavorite;
     }
 
     private void saveIngredients(List<ExtendedIngredient> ingredients) {
@@ -241,9 +330,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
             insertedCount = getContentResolver().bulkInsert(ChiefCookContract.IngredientEntry.CONTENT_URI, cvArray);
         }
 
-        String successMessage = insertedCount + " ingredients inserted.";
-        Log.d(LOG_TAG, successMessage);
-        Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
+        Log.d(LOG_TAG, String.format("%d ingredients inserted.", insertedCount));
     }
 
     @Override
