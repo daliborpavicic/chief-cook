@@ -182,10 +182,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.action_save) {
+        if (itemId == R.id.action_ingredients) {
             if (recipe != null) {
-                saveRecipe();
-                saveIngredientsForRecipe();
+                Toast.makeText(this, "Show dialog with ingredients", Toast.LENGTH_SHORT).show();
                 return true;
             }
         }

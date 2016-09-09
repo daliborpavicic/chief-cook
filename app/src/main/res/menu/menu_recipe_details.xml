@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_save"
-        android:title="Save"
-        android:icon="@drawable/ic_action_save"
+        android:id="@+id/action_ingredients"
+        android:title="@string/action_ingredients"
+        android:icon="@drawable/ic_action_ingredients"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_share"
