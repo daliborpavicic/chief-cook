@@ -3,12 +3,15 @@ package rs.ac.uns.ftn.chiefcook.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,9 +25,10 @@ import rs.ac.uns.ftn.chiefcook.ui.adapters.IngredientsAdapter;
 public class IngredientsFragment extends DialogFragment {
 
     public static final String KEY_INGREDIENTS = "ingredients";
+    public static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
 
-    @BindView(R.id.lvIngredients)
-    protected ListView lvIngredients;
+    @BindView(R.id.lvIngredients) protected ListView lvIngredients;
+    @BindView(R.id.btnAddToShoppingList) protected Button btnAddToShoppingList;
 
     private IngredientsAdapter ingredientsAdapter;
     private ArrayList<ExtendedIngredient> ingredients;
@@ -54,12 +58,23 @@ public class IngredientsFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container);
         ButterKnife.bind(this, rootView);
 
+        btnAddToShoppingList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<ExtendedIngredient> selectedIngredients = ingredientsAdapter.getSelectedIngredients();
+                Log.d(LOG_TAG, "" + selectedIngredients.size());
+            }
+        });
+
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        getDialog().setTitle(
+                getContext().getResources().getString(R.string.ingredients_dialog_title));
 
         ExtendedIngredient[] ingredientsArray = new ExtendedIngredient[ingredients.size()];
         ingredients.toArray(ingredientsArray);

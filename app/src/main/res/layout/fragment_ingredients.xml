@@ -7,7 +7,12 @@
     <ListView
         android:id="@+id/lvIngredients"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
 
-    </ListView>
+    <Button
+        android:id="@+id/btnAddToShoppingList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add to shopping list"/>
 </LinearLayout>
