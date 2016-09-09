@@ -6,7 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +31,7 @@ public class IngredientsAdapter extends ArrayAdapter<ExtendedIngredient> {
 
         ExtendedIngredient ingredient = getItem(position);
 
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
@@ -35,6 +39,17 @@ public class IngredientsAdapter extends ArrayAdapter<ExtendedIngredient> {
 
             viewHolder = new ViewHolder(convertView);
 
+            viewHolder.chbIngredientItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    ExtendedIngredient ingredient =
+                            (ExtendedIngredient) viewHolder.chbIngredientItem.getTag();
+                    ingredient.setSelected(compoundButton.isChecked());
+                }
+            });
+
+            // Save item reference inside a check box
+            viewHolder.chbIngredientItem.setTag(getItem(position));
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {
@@ -49,6 +64,20 @@ public class IngredientsAdapter extends ArrayAdapter<ExtendedIngredient> {
         );
 
         return convertView;
+    }
+
+    public List<ExtendedIngredient> getSelectedIngredients() {
+        List<ExtendedIngredient> selectedIngredients = new ArrayList<>();
+
+        for (int i = 0; i < getCount(); i++) {
+            ExtendedIngredient ingredient = getItem(i);
+
+            if (ingredient.isSelected()) {
+                selectedIngredients.add(ingredient);
+            }
+        }
+
+        return selectedIngredients;
     }
 
     protected static class ViewHolder {
