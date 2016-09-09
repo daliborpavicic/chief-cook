@@ -21,7 +21,7 @@ public class ExtendedIngredient implements Parcelable {
     /**
      * Indicates if ingredient is selected in a list view with checkboxes
      */
-    private Boolean selected = false;
+    private Boolean selected = true;
 
     /**
      *
