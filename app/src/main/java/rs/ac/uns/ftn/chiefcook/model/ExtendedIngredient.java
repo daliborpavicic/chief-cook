@@ -1,9 +1,12 @@
 package rs.ac.uns.ftn.chiefcook.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExtendedIngredient {
+public class ExtendedIngredient implements Parcelable {
 
     private Integer id;
     private String aisle;
@@ -15,6 +18,10 @@ public class ExtendedIngredient {
     private String unitLong;
     private String originalString;
     private List<String> metaInformation = new ArrayList<String>();
+    /**
+     * Indicates if ingredient is selected in a list view with checkboxes
+     */
+    private Boolean selected = false;
 
     /**
      *
@@ -196,4 +203,60 @@ public class ExtendedIngredient {
         this.metaInformation = metaInformation;
     }
 
+    public Boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.aisle);
+        dest.writeString(this.image);
+        dest.writeString(this.name);
+        dest.writeValue(this.amount);
+        dest.writeString(this.unit);
+        dest.writeString(this.unitShort);
+        dest.writeString(this.unitLong);
+        dest.writeString(this.originalString);
+        dest.writeStringList(this.metaInformation);
+        dest.writeValue(this.selected);
+    }
+
+    public ExtendedIngredient() {
+    }
+
+    protected ExtendedIngredient(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.aisle = in.readString();
+        this.image = in.readString();
+        this.name = in.readString();
+        this.amount = (Double) in.readValue(Double.class.getClassLoader());
+        this.unit = in.readString();
+        this.unitShort = in.readString();
+        this.unitLong = in.readString();
+        this.originalString = in.readString();
+        this.metaInformation = in.createStringArrayList();
+        this.selected = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<ExtendedIngredient> CREATOR = new Parcelable.Creator<ExtendedIngredient>() {
+        @Override
+        public ExtendedIngredient createFromParcel(Parcel source) {
+            return new ExtendedIngredient(source);
+        }
+
+        @Override
+        public ExtendedIngredient[] newArray(int size) {
+            return new ExtendedIngredient[size];
+        }
+    };
 }
