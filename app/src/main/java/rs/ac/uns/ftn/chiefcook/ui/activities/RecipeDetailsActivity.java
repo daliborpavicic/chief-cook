@@ -39,7 +39,8 @@ import rs.ac.uns.ftn.chiefcook.model.Step;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeStepAdapter;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.IngredientsFragment;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity
+        implements IngredientsFragment.Listener {
 
     public static final String LOG_TAG = RecipeDetailsActivity.class.getSimpleName();
     public static final String RECIPE_ID_KEY = "recipe_key";
@@ -212,12 +213,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         getContentResolver().insert(ChiefCookContract.RecipeEntry.CONTENT_URI, recipeValues);
     }
 
-    private void saveIngredientsForRecipe() {
+    private void saveIngredients(List<ExtendedIngredient> ingredients) {
         Vector<ContentValues> cVVector = new Vector<>();
-        List<ExtendedIngredient> extendedIngredients = recipe.getExtendedIngredients();
 
         for (ExtendedIngredient ingredient :
-                extendedIngredients) {
+                ingredients) {
             ContentValues ingredientValues = new ContentValues();
 
             ingredientValues.put(ChiefCookContract.IngredientEntry.COLUMN_NAME, ingredient.getName());
@@ -241,6 +241,13 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             insertedCount = getContentResolver().bulkInsert(ChiefCookContract.IngredientEntry.CONTENT_URI, cvArray);
         }
 
-        Log.d(LOG_TAG, insertedCount + " ingredients inserted.");
+        String successMessage = insertedCount + " ingredients inserted.";
+        Log.d(LOG_TAG, successMessage);
+        Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAddToShoppingList(List<ExtendedIngredient> selectedIngredients) {
+        saveIngredients(selectedIngredients);
     }
 }

@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.chiefcook.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,10 @@ public class IngredientsFragment extends DialogFragment {
 
     private IngredientsAdapter ingredientsAdapter;
     private ArrayList<ExtendedIngredient> ingredients;
+
+    public interface Listener {
+        void onAddToShoppingList(List<ExtendedIngredient> selectedIngredients);
+    }
 
     public IngredientsFragment() {
     }
@@ -62,7 +65,9 @@ public class IngredientsFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 List<ExtendedIngredient> selectedIngredients = ingredientsAdapter.getSelectedIngredients();
-                Log.d(LOG_TAG, "" + selectedIngredients.size());
+                Listener listener = (Listener) getActivity();
+                listener.onAddToShoppingList(selectedIngredients);
+                dismiss();
             }
         });
 
@@ -82,4 +87,5 @@ public class IngredientsFragment extends DialogFragment {
         ingredientsAdapter = new IngredientsAdapter(getActivity(), ingredientsArray);
         lvIngredients.setAdapter(ingredientsAdapter);
     }
+
 }
