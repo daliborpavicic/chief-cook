@@ -3,15 +3,18 @@ package rs.ac.uns.ftn.chiefcook.ui.fragments;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
+import android.content.DialogInterface;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,12 +100,31 @@ public class ShoppingListFragment extends Fragment {
                 if (adapter.getSelectedIngredientIds().isEmpty()) {
                     return false;
                 } else {
-                    deleteSelectedIngredients(adapter.getSelectedIngredientIds());
+                    showConfirmationDialog();
                     return true;
                 }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showConfirmationDialog() {
+        FragmentActivity activity = getActivity();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog confirmationDialog = builder
+                .setTitle(activity.getString(R.string.dialog_delete_title))
+                .setMessage(activity.getString(R.string.dialog_delete_message))
+                .setPositiveButton(activity.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteSelectedIngredients(adapter.getSelectedIngredientIds());
+                    }
+                })
+                .setNegativeButton(activity.getString(R.string.dialog_no), null)
+                .create();
+
+        confirmationDialog.show();
     }
 
     private void deleteSelectedIngredients(List<Integer> selectedIngredientIds) {

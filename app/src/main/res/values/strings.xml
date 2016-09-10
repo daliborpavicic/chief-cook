@@ -16,6 +16,10 @@
 
     <string name="dialog_ok">Ok</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="dialog_delete_title">Delete confirmation</string>
+    <string name="dialog_delete_message">Do you want to remove selected items from the shopping list ?</string>
     <string name="dialog_shopping_list">Add to shopping list</string>
     <string name="ingredients_dialog_title">Ingredients</string>
     <string name="action_search_hint">Search recipes</string>
