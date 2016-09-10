@@ -14,7 +14,7 @@
     <string name="action_filter">Filter</string>
     <string name="action_ingredients">Ingredients</string>
 
-    <string name="dialog_ok">Ok</string>
+    <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
@@ -28,6 +28,13 @@
     <string name="filter_label_intolerances">Intolerances</string>
     <string name="filter_label_types">Types</string>
     <string name="step_label">Step</string>
+
+    <string name="snackbar_text_favorite_recipe">Added to favorites</string>
+    <string name="snackbar_text_unfavorite_recipe">Removed from favorites</string>
+    <string name="snackbar_text_add_to_shopping_list">items added to shopping list</string>
+    <string name="snackbar_text_remove_from_shopping_list">items removed</string>
+    <string name="snackbar_action_view_favorites">View</string>
+
 
     <!-- Strings related to Search suggestions preference -->
     <string name="pref_enable_search_suggestions_key" translatable="false">enable_search_suggestions</string>

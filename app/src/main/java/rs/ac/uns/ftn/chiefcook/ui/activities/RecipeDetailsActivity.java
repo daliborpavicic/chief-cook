@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -261,9 +262,20 @@ public class RecipeDetailsActivity extends AppCompatActivity
         Uri insertedUri = getContentResolver().insert(ChiefCookContract.RecipeEntry.CONTENT_URI, recipeValues);
 
         Log.d(LOG_TAG, String.format("Inserted recipe URI: %s", insertedUri));
+
+        Snackbar.make(
+                rvRecipeSteps,
+                R.string.snackbar_text_favorite_recipe,
+                Snackbar.LENGTH_LONG
+        ).setAction(R.string.snackbar_action_view_favorites, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(createFavoritesIntent());
+            }
+        }).show();
     }
 
-    private boolean deleteRecipe(int recipeId) {
+    private void deleteRecipe(int recipeId) {
         boolean deleted;
         String whereClause = ChiefCookContract.RecipeEntry.COLUMN_API_ID + " = ? ";
         String[] selectionArgs = new String[] { String.valueOf(recipeId) };
@@ -276,9 +288,26 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
         deleted = deletedCount > 0;
 
-        Log.d(LOG_TAG, String.format("%d recipes deleted.", deletedCount));
+        if (deleted) {
+            Snackbar.make(
+                    rvRecipeSteps,
+                    R.string.snackbar_text_unfavorite_recipe,
+                    Snackbar.LENGTH_LONG
+            ).setAction(R.string.snackbar_action_view_favorites, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(createFavoritesIntent());
+                }
+            }).show();
+        }
 
-        return deleted;
+        Log.d(LOG_TAG, String.format("%d recipes deleted.", deletedCount));
+    }
+
+    private Intent createFavoritesIntent() {
+        Intent favoritesIntent = new Intent(RecipeDetailsActivity.this, MainActivity.class);
+        favoritesIntent.putExtra(MainActivity.CURRENT_ITEM_ID_KEY, R.id.nav_favorite_recipes);
+        return favoritesIntent;
     }
 
     private boolean isFavoriteRecipe(Integer recipeId) {
@@ -304,7 +333,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
         return isFavorite;
     }
 
-    private void saveIngredients(List<ExtendedIngredient> ingredients) {
+    private int saveIngredients(List<ExtendedIngredient> ingredients) {
+        int savedCount = 0;
         Vector<ContentValues> cVVector = new Vector<>();
 
         for (ExtendedIngredient ingredient :
@@ -323,20 +353,35 @@ public class RecipeDetailsActivity extends AppCompatActivity
             cVVector.add(ingredientValues);
         }
 
-        int insertedCount = 0;
-
         if (cVVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
 
-            insertedCount = getContentResolver().bulkInsert(ChiefCookContract.IngredientEntry.CONTENT_URI, cvArray);
+            savedCount = getContentResolver().bulkInsert(ChiefCookContract.IngredientEntry.CONTENT_URI, cvArray);
         }
 
-        Log.d(LOG_TAG, String.format("%d ingredients inserted.", insertedCount));
+        Log.d(LOG_TAG, String.format("%d ingredients inserted.", savedCount));
+
+        return savedCount;
     }
 
     @Override
     public void onAddToShoppingList(List<ExtendedIngredient> selectedIngredients) {
-        saveIngredients(selectedIngredients);
+        int savedCount = saveIngredients(selectedIngredients);
+
+        String snackBarText = String.format("%d %s",
+                savedCount, getResources().getString(R.string.snackbar_text_add_to_shopping_list));
+
+        Snackbar.make(rvRecipeSteps, null, Snackbar.LENGTH_LONG)
+                .setText(snackBarText)
+                .setAction(R.string.snackbar_action_view_favorites, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(RecipeDetailsActivity.this, MainActivity.class);
+                        intent.putExtra(MainActivity.CURRENT_ITEM_ID_KEY, R.id.nav_shopping_list);
+                        startActivity(intent);
+                    }
+                })
+                .show();
     }
 }

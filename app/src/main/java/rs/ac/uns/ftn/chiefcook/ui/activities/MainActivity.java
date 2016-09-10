@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.chiefcook.ui.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,12 +59,18 @@ public class MainActivity extends AppCompatActivity {
 
         final Menu nvDrawerMenu = nvDrawer.getMenu();
 
-        if (savedInstanceState == null) {
-            selectDrawerItem(nvDrawerMenu.findItem(R.id.nav_home));
-        } else {
+        Intent intent = getIntent();
+        int drawerItemIdFromIntent = intent.getIntExtra(CURRENT_ITEM_ID_KEY, R.id.nav_home);
 
-            currentItemId = savedInstanceState.getInt(CURRENT_ITEM_ID_KEY);
-            selectDrawerItem(nvDrawerMenu.findItem(currentItemId));
+        if (drawerItemIdFromIntent != R.id.nav_home) {
+            selectDrawerItem(nvDrawerMenu.findItem(drawerItemIdFromIntent));
+        } else {
+            if (savedInstanceState == null) {
+                selectDrawerItem(nvDrawerMenu.findItem(R.id.nav_home));
+            } else {
+                currentItemId = savedInstanceState.getInt(CURRENT_ITEM_ID_KEY);
+                selectDrawerItem(nvDrawerMenu.findItem(currentItemId));
+            }
         }
 
         // add all fragment transactions to the back stack, except the first one to avoid empty activity on a back button click

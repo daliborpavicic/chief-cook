@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -76,7 +77,6 @@ public class ShoppingListFragment extends Fragment {
                 }
             };
 
-
     public ShoppingListFragment() {
         // Required empty public constructor
     }
@@ -118,7 +118,15 @@ public class ShoppingListFragment extends Fragment {
                 .setPositiveButton(activity.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteSelectedIngredients(adapter.getSelectedIngredientIds());
+                        int deletedCount = deleteSelectedIngredients(adapter.getSelectedIngredientIds());
+
+                        String snackBarText = String.format("%d %s",
+                                deletedCount, getResources().getString(R.string.snackbar_text_remove_from_shopping_list));
+
+                        Snackbar.make(getView(), null, Snackbar.LENGTH_SHORT)
+                                .setText(snackBarText)
+                                .show();
+
                     }
                 })
                 .setNegativeButton(activity.getString(R.string.dialog_no), null)
@@ -127,8 +135,8 @@ public class ShoppingListFragment extends Fragment {
         confirmationDialog.show();
     }
 
-    private void deleteSelectedIngredients(List<Integer> selectedIngredientIds) {
-
+    private int deleteSelectedIngredients(List<Integer> selectedIngredientIds) {
+        int deletedCount = 0;
         ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<>();
 
         for (Integer ingredientId :selectedIngredientIds) {
@@ -147,12 +155,16 @@ public class ShoppingListFragment extends Fragment {
             ContentProviderResult[] contentProviderResults = getActivity().getContentResolver()
                     .applyBatch(ChiefCookContract.CONTENT_AUTHORITY, deleteOperations);
 
+            deletedCount = contentProviderResults.length;
+
             Log.d(LOG_TAG, String.format("Executed delete operations: %d", contentProviderResults.length));
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {
             e.printStackTrace();
         }
+
+        return deletedCount;
     }
 
     @Override

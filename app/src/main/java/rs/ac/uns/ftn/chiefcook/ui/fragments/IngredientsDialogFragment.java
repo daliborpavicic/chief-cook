@@ -74,7 +74,6 @@ public class IngredientsDialogFragment extends DialogFragment {
 
                         Log.d(LOG_TAG, String.format("Number of selected ingredients: %d", selectedIngredients.size()));
                         listener.onAddToShoppingList(selectedIngredients);
-                        dismiss();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
