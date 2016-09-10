@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.chiefcook.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -65,11 +66,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Recipe recipe = recipes.get(position);
+        String imageUrl = createAbsoluteImageUrl(recipe.getImage());
 
         holder.tvRecipeNameItem.setText(recipe.getTitle());
         holder.tvTimeItem.setText(String.valueOf(recipe.getReadyInMinutes()));
         Picasso.with(context)
-                .load(baseImageUrl + recipe.getImage())
+                .load(imageUrl)
                 .into(holder.ivRecipeImage);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +80,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 listener.onClick(recipe.getId());
             }
         });
+    }
+
+    @NonNull
+    private String createAbsoluteImageUrl(String imageUrl) {
+        return imageUrl.startsWith("http") ? imageUrl : baseImageUrl + imageUrl;
     }
 
     @Override
