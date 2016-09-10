@@ -21,10 +21,10 @@ import rs.ac.uns.ftn.chiefcook.ui.adapters.IngredientsAdapter;
 /**
  * Created by daliborp on 9.9.16..
  */
-public class IngredientsFragment extends DialogFragment {
+public class IngredientsDialogFragment extends DialogFragment {
 
     public static final String KEY_INGREDIENTS = "ingredients";
-    public static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
+    public static final String LOG_TAG = IngredientsDialogFragment.class.getSimpleName();
 
     @BindView(R.id.lvIngredients) protected ListView lvIngredients;
     @BindView(R.id.btnAddToShoppingList) protected Button btnAddToShoppingList;
@@ -36,11 +36,11 @@ public class IngredientsFragment extends DialogFragment {
         void onAddToShoppingList(List<ExtendedIngredient> selectedIngredients);
     }
 
-    public IngredientsFragment() {
+    public IngredientsDialogFragment() {
     }
 
-    public static IngredientsFragment newInstance(ArrayList<ExtendedIngredient> ingredients) {
-        IngredientsFragment ingredientsFragment = new IngredientsFragment();
+    public static IngredientsDialogFragment newInstance(ArrayList<ExtendedIngredient> ingredients) {
+        IngredientsDialogFragment ingredientsFragment = new IngredientsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(KEY_INGREDIENTS, ingredients);
         ingredientsFragment.setArguments(args);

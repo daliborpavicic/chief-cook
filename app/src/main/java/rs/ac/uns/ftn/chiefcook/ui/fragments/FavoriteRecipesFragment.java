@@ -17,15 +17,15 @@ import android.widget.ListView;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.data.ChiefCookContract;
 import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
-import rs.ac.uns.ftn.chiefcook.ui.adapters.FavoriteRecipesAdapter;
+import rs.ac.uns.ftn.chiefcook.ui.adapters.FavoriteRecipeAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FavoriteRecipesFragment extends Fragment
-        implements FavoriteRecipesAdapter.Listener {
+        implements FavoriteRecipeAdapter.Listener {
 
-    private FavoriteRecipesAdapter favoriteRecipesAdapter;
+    private FavoriteRecipeAdapter favoriteRecipeAdapter;
 
     LoaderManager.LoaderCallbacks<Cursor> favoriteRecipesLoader =
             new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -56,12 +56,12 @@ public class FavoriteRecipesFragment extends Fragment
 
                 @Override
                 public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                    favoriteRecipesAdapter.swapCursor(data);
+                    favoriteRecipeAdapter.swapCursor(data);
                 }
 
                 @Override
                 public void onLoaderReset(Loader<Cursor> loader) {
-                    favoriteRecipesAdapter.swapCursor(null);
+                    favoriteRecipeAdapter.swapCursor(null);
                 }
             };
 
@@ -73,13 +73,13 @@ public class FavoriteRecipesFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        favoriteRecipesAdapter = new FavoriteRecipesAdapter(getActivity(), null);
-        favoriteRecipesAdapter.setListener(this);
+        favoriteRecipeAdapter = new FavoriteRecipeAdapter(getActivity(), null);
+        favoriteRecipeAdapter.setListener(this);
 
         View rootView = inflater.inflate(R.layout.fragment_favorite_recipes, container, false);
 
         ListView lvRecipes = (ListView) rootView.findViewById(R.id.lvFavoriteRecipes);
-        lvRecipes.setAdapter(favoriteRecipesAdapter);
+        lvRecipes.setAdapter(favoriteRecipeAdapter);
 
         return rootView;
     }

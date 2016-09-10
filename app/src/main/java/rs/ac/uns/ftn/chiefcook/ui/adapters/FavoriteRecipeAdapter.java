@@ -20,7 +20,7 @@ import rs.ac.uns.ftn.chiefcook.data.ChiefCookContract;
 /**
  * Created by daliborp on 10.9.16..
  */
-public class FavoriteRecipesAdapter extends CursorAdapter {
+public class FavoriteRecipeAdapter extends CursorAdapter {
 
     public interface Listener {
         void onRecipeClick(int recipeId);
@@ -28,7 +28,7 @@ public class FavoriteRecipesAdapter extends CursorAdapter {
 
     private Listener listener;
 
-    public FavoriteRecipesAdapter(Context context, Cursor cursor) {
+    public FavoriteRecipeAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
 

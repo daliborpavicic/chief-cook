@@ -43,10 +43,10 @@ import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipeInstructionsItem;
 import rs.ac.uns.ftn.chiefcook.model.Step;
 import rs.ac.uns.ftn.chiefcook.ui.adapters.RecipeStepAdapter;
-import rs.ac.uns.ftn.chiefcook.ui.fragments.IngredientsFragment;
+import rs.ac.uns.ftn.chiefcook.ui.fragments.IngredientsDialogFragment;
 
 public class RecipeDetailsActivity extends AppCompatActivity
-        implements IngredientsFragment.Listener {
+        implements IngredientsDialogFragment.Listener {
 
     public static final String LOG_TAG = RecipeDetailsActivity.class.getSimpleName();
     public static final String RECIPE_ID_KEY = "recipe_key";
@@ -126,11 +126,11 @@ public class RecipeDetailsActivity extends AppCompatActivity
                 if (favoriteRecipe) {
                     deleteRecipe(recipeId);
                     favoriteRecipe = false;
-                    setFavoriteIcon(favoriteRecipe);
+                    setFavoriteIcon(false);
                 } else {
                     saveRecipe();
                     favoriteRecipe = true;
-                    setFavoriteIcon(favoriteRecipe);
+                    setFavoriteIcon(true);
                 }
             }
         });
@@ -244,7 +244,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     private void showIngredientsDialog() {
         if (recipe != null && recipe.getExtendedIngredients().size() > 0) {
-            IngredientsFragment ingredientsDialogFragment = IngredientsFragment.newInstance(
+            IngredientsDialogFragment ingredientsDialogFragment = IngredientsDialogFragment.newInstance(
                     (ArrayList<ExtendedIngredient>) recipe.getExtendedIngredients());
 
             ingredientsDialogFragment.show(getSupportFragmentManager(), null);
@@ -296,7 +296,9 @@ public class RecipeDetailsActivity extends AppCompatActivity
                 null
         );
 
-        isFavorite = query.getCount() > 0;
+        isFavorite = query != null && query.getCount() > 0;
+        query.close(); // free up the cursor
+
         Log.d(LOG_TAG, String.format("Recipe is favorite: %s", isFavorite));
 
         return isFavorite;
