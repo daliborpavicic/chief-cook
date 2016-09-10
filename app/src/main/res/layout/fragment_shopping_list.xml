@@ -4,9 +4,8 @@
     android:layout_height="match_parent"
     tools:context="rs.ac.uns.ftn.chiefcook.ui.fragments.ShoppingListFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/lvShoppingItems"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Shopping list" />
-
+        android:layout_height="wrap_content" />
 </FrameLayout>
