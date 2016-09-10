@@ -168,41 +168,49 @@ public class HomeFragment extends Fragment
 
     @Override
     public boolean onQueryTextChange(final String newText) {
-        searchSuggestionAdapter.notifyDataSetInvalidated();
-
         int minQueryLength = 2;
-        Log.d(LOG_TAG, "New query= " + newText);
+        boolean shouldShowSearchSuggestions = Utils.isSearchSuggestionsEnabled(getActivity())
+                && newText.length() > minQueryLength;
 
-        if (newText.length() > minQueryLength) {
-            Call<List<AutocompleteRecipeSearchModel>> listCall = recipesService.autocompleteRecipeSearch(newText, 10);
-            listCall.enqueue(new Callback<List<AutocompleteRecipeSearchModel>>() {
-                @Override
-                public void onResponse(Call<List<AutocompleteRecipeSearchModel>> call,
-                                       Response<List<AutocompleteRecipeSearchModel>> response) {
-                    List<AutocompleteRecipeSearchModel> recipeAutocompletes = response.body();
+        Log.d(LOG_TAG, "Show suggestions: " + shouldShowSearchSuggestions);
 
-                    if (recipeAutocompletes.size() > 0) {
-                        SearchSuggestionsCursor searchSuggestionsCursor = new SearchSuggestionsCursor();
-                        searchSuggestions = Utils.mapToStringList(recipeAutocompletes);
-                        searchSuggestionsCursor.addSearchSuggestions(searchSuggestions);
-
-                        searchSuggestionAdapter.changeCursor(searchSuggestionsCursor);
-                    } else {
-                        Log.d(LOG_TAG, String.format("No search suggestions available for: %s", newText));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<AutocompleteRecipeSearchModel>> call,
-                                      Throwable t) {
-                    Log.e(LOG_TAG, t.getLocalizedMessage());
-                }
-            });
+        if (shouldShowSearchSuggestions) {
+            loadSearchSuggestions(newText);
 
             return true;
         }
 
         return false;
+    }
+
+    private void loadSearchSuggestions(final String queryText) {
+        searchSuggestionAdapter.notifyDataSetInvalidated();
+
+        Call<List<AutocompleteRecipeSearchModel>> listCall = recipesService.autocompleteRecipeSearch(queryText, 10);
+
+        listCall.enqueue(new Callback<List<AutocompleteRecipeSearchModel>>() {
+            @Override
+            public void onResponse(Call<List<AutocompleteRecipeSearchModel>> call,
+                                   Response<List<AutocompleteRecipeSearchModel>> response) {
+                List<AutocompleteRecipeSearchModel> recipeAutocompletes = response.body();
+
+                if (recipeAutocompletes.size() > 0) {
+                    SearchSuggestionsCursor searchSuggestionsCursor = new SearchSuggestionsCursor();
+                    searchSuggestions = Utils.mapToStringList(recipeAutocompletes);
+                    searchSuggestionsCursor.addSearchSuggestions(searchSuggestions);
+
+                    searchSuggestionAdapter.changeCursor(searchSuggestionsCursor);
+                } else {
+                    Log.d(LOG_TAG, String.format("No search suggestions available for: %s", queryText));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AutocompleteRecipeSearchModel>> call,
+                                  Throwable t) {
+                Log.e(LOG_TAG, t.getLocalizedMessage());
+            }
+        });
     }
 
     private void getRecipeMatches(int page) {
