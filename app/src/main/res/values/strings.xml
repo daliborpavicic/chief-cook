@@ -16,6 +16,7 @@
 
     <string name="dialog_ok">Ok</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_shopping_list">Add to shopping list</string>
     <string name="ingredients_dialog_title">Ingredients</string>
     <string name="action_search_hint">Search recipes</string>
     <string name="filter_label_cuisine">Cuisine</string>
