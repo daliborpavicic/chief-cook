@@ -20,9 +20,9 @@ import rs.ac.uns.ftn.chiefcook.model.ExtendedIngredient;
 /**
  * Created by daliborp on 9.9.16..
  */
-public class IngredientsAdapter extends ArrayAdapter<ExtendedIngredient> {
+public class IngredientArrayAdapter extends ArrayAdapter<ExtendedIngredient> {
 
-    public IngredientsAdapter(Context context, ExtendedIngredient[] objects) {
+    public IngredientArrayAdapter(Context context, ExtendedIngredient[] objects) {
         super(context, R.layout.item_ingredient, objects);
     }
 

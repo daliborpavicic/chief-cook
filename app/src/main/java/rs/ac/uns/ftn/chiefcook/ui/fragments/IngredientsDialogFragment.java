@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.model.ExtendedIngredient;
-import rs.ac.uns.ftn.chiefcook.ui.adapters.IngredientsAdapter;
+import rs.ac.uns.ftn.chiefcook.ui.adapters.IngredientArrayAdapter;
 
 /**
  * Created by daliborp on 9.9.16..
@@ -27,7 +27,7 @@ public class IngredientsDialogFragment extends DialogFragment {
     public static final String LOG_TAG = IngredientsDialogFragment.class.getSimpleName();
     public static final String KEY_INGREDIENTS = "ingredients";
 
-    private IngredientsAdapter ingredientsAdapter;
+    private IngredientArrayAdapter ingredientArrayAdapter;
     private ArrayList<ExtendedIngredient> ingredients;
 
     public interface Listener {
@@ -62,14 +62,14 @@ public class IngredientsDialogFragment extends DialogFragment {
 
         ButterKnife.bind(this, dialogView);
 
-        ingredientsAdapter = createIngredientsAdapter(ingredients);
+        ingredientArrayAdapter = createIngredientsAdapter(ingredients);
 
         AlertDialog ingredientsDialog = builder.setView(dialogView)
                 .setTitle(R.string.ingredients_dialog_title)
                 .setPositiveButton(R.string.dialog_shopping_list, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        List<ExtendedIngredient> selectedIngredients = ingredientsAdapter.getSelectedIngredients();
+                        List<ExtendedIngredient> selectedIngredients = ingredientArrayAdapter.getSelectedIngredients();
                         Listener listener = (Listener) getActivity();
 
                         Log.d(LOG_TAG, String.format("Number of selected ingredients: %d", selectedIngredients.size()));
@@ -83,16 +83,16 @@ public class IngredientsDialogFragment extends DialogFragment {
                         dismiss();
                     }
                 })
-                .setAdapter(ingredientsAdapter, null)
+                .setAdapter(ingredientArrayAdapter, null)
                 .create();
 
         return ingredientsDialog;
     }
 
-    private IngredientsAdapter createIngredientsAdapter(ArrayList<ExtendedIngredient> ingredients) {
+    private IngredientArrayAdapter createIngredientsAdapter(ArrayList<ExtendedIngredient> ingredients) {
         ExtendedIngredient[] ingredientsArray = new ExtendedIngredient[ingredients.size()];
         ingredients.toArray(ingredientsArray);
 
-        return new IngredientsAdapter(getActivity(), ingredientsArray);
+        return new IngredientArrayAdapter(getActivity(), ingredientsArray);
     }
 }
