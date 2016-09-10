@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.FavoriteRecipesFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.HomeFragment;
-import rs.ac.uns.ftn.chiefcook.ui.fragments.RecipesFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.SettingsFragment;
 
 /**
@@ -78,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
                         if (visibleFragment instanceof HomeFragment) {
                             currentItemId = R.id.nav_home;
-                        }
-
-                        if (visibleFragment instanceof RecipesFragment) {
-                            currentItemId = R.id.nav_recipes;
                         }
 
                         if (visibleFragment instanceof FavoriteRecipesFragment) {
@@ -147,9 +142,6 @@ public class MainActivity extends AppCompatActivity {
         switch(itemId) {
             case R.id.nav_home:
                 fragmentClass = HomeFragment.class;
-                break;
-            case R.id.nav_recipes:
-                fragmentClass = RecipesFragment.class;
                 break;
             case R.id.nav_favorite_recipes:
                 fragmentClass = FavoriteRecipesFragment.class;

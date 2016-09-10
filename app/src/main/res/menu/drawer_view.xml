@@ -8,10 +8,6 @@
             android:icon="@drawable/ic_drawer_home"
             android:title="@string/menu_title_home" />
         <item
-            android:id="@+id/nav_recipes"
-            android:icon="@drawable/ic_drawer_recipes"
-            android:title="@string/menu_title_recipes" />
-        <item
             android:id="@+id/nav_favorite_recipes"
             android:icon="@drawable/ic_drawer_recipes"
             android:title="@string/menu_title_favorite_recipes" />
