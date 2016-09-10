@@ -1,13 +1,18 @@
 package rs.ac.uns.ftn.chiefcook.ui.fragments;
 
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.data.ChiefCookContract;
@@ -25,6 +33,7 @@ import rs.ac.uns.ftn.chiefcook.ui.adapters.IngredientCursorAdapter;
  */
 public class ShoppingListFragment extends Fragment {
 
+    public static final String LOG_TAG = ShoppingListFragment.class.getSimpleName();
     private IngredientCursorAdapter adapter;
 
     LoaderManager.LoaderCallbacks<Cursor> loader =
@@ -85,10 +94,43 @@ public class ShoppingListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete_items:
-                return true;
+                if (adapter.getSelectedIngredientIds().isEmpty()) {
+                    return false;
+                } else {
+                    deleteSelectedIngredients(adapter.getSelectedIngredientIds());
+                    return true;
+                }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteSelectedIngredients(List<Integer> selectedIngredientIds) {
+
+        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<>();
+
+        for (Integer ingredientId :selectedIngredientIds) {
+            ContentProviderOperation deleteOperation = ContentProviderOperation
+                    .newDelete(ChiefCookContract.IngredientEntry.CONTENT_URI)
+                    .withSelection(
+                            ChiefCookContract.IngredientEntry._ID + " = ?",
+                            new String[] { String.valueOf(ingredientId) }
+                    )
+                    .build();
+
+            deleteOperations.add(deleteOperation);
+        }
+
+        try {
+            ContentProviderResult[] contentProviderResults = getActivity().getContentResolver()
+                    .applyBatch(ChiefCookContract.CONTENT_AUTHORITY, deleteOperations);
+
+            Log.d(LOG_TAG, String.format("Executed delete operations: %d", contentProviderResults.length));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
