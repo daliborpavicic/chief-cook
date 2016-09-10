@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.FavoriteRecipesFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.HomeFragment;
 import rs.ac.uns.ftn.chiefcook.ui.fragments.SettingsFragment;
+import rs.ac.uns.ftn.chiefcook.ui.fragments.ShoppingListFragment;
 
 /**
  * Created by daliborp on 28.8.16..
@@ -81,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
                         if (visibleFragment instanceof FavoriteRecipesFragment) {
                             currentItemId = R.id.nav_favorite_recipes;
+                        }
+
+                        if (visibleFragment instanceof ShoppingListFragment) {
+                            currentItemId = R.id.nav_shopping_list;
                         }
 
                         if (visibleFragment instanceof SettingsFragment) {
@@ -145,6 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_favorite_recipes:
                 fragmentClass = FavoriteRecipesFragment.class;
+                break;
+            case R.id.nav_shopping_list:
+                fragmentClass = ShoppingListFragment.class;
                 break;
             case R.id.nav_settings:
                 fragmentClass = SettingsFragment.class;

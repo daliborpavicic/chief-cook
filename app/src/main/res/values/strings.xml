@@ -6,6 +6,7 @@
 
     <string name="menu_title_home">Home</string>
     <string name="menu_title_favorite_recipes">Favorite recipes</string>
+    <string name="menu_title_shopping_list">Shopping list</string>
     <string name="menu_title_settings">Settings</string>
 
     <string name="action_search">Search</string>
