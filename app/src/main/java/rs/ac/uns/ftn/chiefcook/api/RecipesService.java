@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rs.ac.uns.ftn.chiefcook.model.AutocompleteRecipeSearchModel;
+import rs.ac.uns.ftn.chiefcook.model.PopularRecipesResponse;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipeInstructionsItem;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
@@ -15,6 +16,9 @@ import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
  * Created by daliborp on 20.8.16..
  */
 public interface RecipesService {
+
+    @GET("recipes/random")
+    Call<PopularRecipesResponse> getPopularRecipes(@Query("number") Integer numberOfRecipes);
 
     @GET("/recipes/search")
     Call<RecipesListResponse> searchRecipes(@Query("query") String query,
