@@ -1,10 +1,15 @@
 package rs.ac.uns.ftn.chiefcook.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.model.AutocompleteRecipeSearchModel;
 
 /**
@@ -30,5 +35,13 @@ public class Utils {
         }
 
         return mappedList;
+    }
+
+    public static boolean isSearchSuggestionsEnabled(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(
+                context.getString(R.string.pref_enable_search_suggestions_key),
+                Boolean.valueOf(context.getString(R.string.pref_enable_search_suggestions_default))
+        );
     }
 }
