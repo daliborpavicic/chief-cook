@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.chiefcook.ui.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,8 +69,10 @@ public class IngredientCursorAdapter extends CursorAdapter {
 
                 if (compoundButton.isChecked()) {
                     selectedIngredientIds.add(ingredientId);
+                    holder.strikeThroughText(true);
                 } else {
                     selectedIngredientIds.remove(ingredientId);
+                    holder.strikeThroughText(false);
                 }
             }
         });
@@ -82,6 +85,30 @@ public class IngredientCursorAdapter extends CursorAdapter {
 
         public ViewHolder(View itemView) {
             ButterKnife.bind(this, itemView);
+        }
+
+        /**
+         * Adds or removes strike through holder text views
+         * @param strike - flag which indicates if strike through text should be added or removed
+         */
+        void strikeThroughText(boolean strike) {
+            int nameFlags = tvIngredientName.getPaintFlags();
+            int amountFlags = tvIngredientAmount.getPaintFlags();
+
+            if (strike) {
+                // add strike through text
+                tvIngredientName.setPaintFlags(nameFlags | Paint.STRIKE_THRU_TEXT_FLAG);
+                tvIngredientAmount.setPaintFlags(amountFlags | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                boolean nameHasStrike = (nameFlags & Paint.STRIKE_THRU_TEXT_FLAG) > 0;
+                boolean amountHasStrike = (amountFlags & Paint.STRIKE_THRU_TEXT_FLAG) > 0;
+
+                // remove strike through text if already applied
+                if (nameHasStrike && amountHasStrike) {
+                    tvIngredientName.setPaintFlags(nameFlags & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    tvIngredientAmount.setPaintFlags(amountFlags & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+            }
         }
     }
 
