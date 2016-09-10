@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:paddingLeft="16dp"
         />
 
     <TextView
@@ -17,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/chbIngredientItem"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
         android:text="Ingredient 1"
         />
 
@@ -27,7 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/chbIngredientItem"
         android:layout_below="@+id/tvIngredientName"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Amount 1"
         />
 
