@@ -43,7 +43,7 @@ public class ChiefCookDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_INGREDIENT_TABLE = "CREATE TABLE " + ChiefCookContract.IngredientEntry.TABLE_NAME + " (" +
                 ChiefCookContract.IngredientEntry._ID + " INTEGER PRIMARY KEY, " +
                 ChiefCookContract.IngredientEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                ChiefCookContract.IngredientEntry.COLUMN_AMOUNT + " INTEGER NOT NULL, " +
+                ChiefCookContract.IngredientEntry.COLUMN_AMOUNT + " REAL NOT NULL, " +
                 ChiefCookContract.IngredientEntry.COLUMN_UNIT + " TEXT, " +
                 ChiefCookContract.IngredientEntry.COLUMN_UNIT_SHORT + " TEXT, " +
                 ChiefCookContract.IngredientEntry.COLUMN_IMAGE_URL + " TEXT, " +
