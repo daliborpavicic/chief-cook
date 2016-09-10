@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment
     private SearchSuggestionAdapter searchSuggestionAdapter;
 
     private RecipesService recipesService;
-    private RecipesListResponse recipesListResponse;
+    private List<Recipe> recipeList;
 
     private List<String> searchSuggestions;
     private String query = "egg";
@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment
     private String filterDiet;
     private String filterIntolerance;
     private String filterRecipeType;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         recipesService = SpoonacularApi.getRecipesService();
-        recipesListResponse = new RecipesListResponse();
+        recipeList = new ArrayList<>();
         searchSuggestions = new ArrayList<>();
     }
 
@@ -103,7 +104,7 @@ public class HomeFragment extends Fragment
 
     private void setupRecipeRecycler() {
         int spanCount = 2;
-        recipeAdapter = new RecipeAdapter(getActivity(), recipesListResponse.getResults());
+        recipeAdapter = new RecipeAdapter(getActivity(), recipeList);
 
         recipeAdapter.setListener(new RecipeAdapter.Listener() {
             @Override
@@ -159,7 +160,7 @@ public class HomeFragment extends Fragment
     @Override
     public boolean onQueryTextSubmit(String queryText) {
         query = queryText;
-        recipesListResponse.getResults().clear();
+        recipeList.clear();
         getRecipeMatches(0);
         searchView.clearFocus();
 
@@ -227,7 +228,7 @@ public class HomeFragment extends Fragment
                 List<Recipe> recipeResults = response.body().getResults();
                 String baseUri = response.body().getBaseUri();
 
-                recipesListResponse.getResults().addAll(recipeResults);
+                recipeList.addAll(recipeResults);
                 recipeAdapter.setBaseImageUrl(baseUri);
 
                 recipeAdapter.notifyDataSetChanged();
