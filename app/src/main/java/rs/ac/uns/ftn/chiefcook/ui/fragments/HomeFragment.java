@@ -30,6 +30,7 @@ import rs.ac.uns.ftn.chiefcook.R;
 import rs.ac.uns.ftn.chiefcook.api.RecipesService;
 import rs.ac.uns.ftn.chiefcook.api.SpoonacularApi;
 import rs.ac.uns.ftn.chiefcook.model.AutocompleteRecipeSearchModel;
+import rs.ac.uns.ftn.chiefcook.model.PopularRecipesResponse;
 import rs.ac.uns.ftn.chiefcook.model.Recipe;
 import rs.ac.uns.ftn.chiefcook.model.RecipesListResponse;
 import rs.ac.uns.ftn.chiefcook.ui.activities.RecipeDetailsActivity;
@@ -61,12 +62,11 @@ public class HomeFragment extends Fragment
     private List<Recipe> recipeList;
 
     private List<String> searchSuggestions;
-    private String query = "egg";
+    private String query;
     private String filterCuisine;
     private String filterDiet;
     private String filterIntolerance;
     private String filterRecipeType;
-
 
     public HomeFragment() {
         // Required empty public constructor
@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment
 
         searchSuggestionAdapter = setupSuggestionAdapter();
 
-        getRecipeMatches(0);
+        loadPopularRecipes();
 
         return rootView;
     }
@@ -124,8 +124,28 @@ public class HomeFragment extends Fragment
         rvRecipes.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Log.d(LOG_TAG, "Current page = " + page);
                 getRecipeMatches(page);
+            }
+        });
+    }
+
+    private void loadPopularRecipes() {
+        int numberOfPopularRecipes = 8;
+        Call<PopularRecipesResponse> popularRecipesCall =
+                recipesService.getPopularRecipes(numberOfPopularRecipes);
+
+        popularRecipesCall.enqueue(new Callback<PopularRecipesResponse>() {
+            @Override
+            public void onResponse(Call<PopularRecipesResponse> call, Response<PopularRecipesResponse> response) {
+                List<Recipe> popularRecipes = response.body().getRecipes();
+                recipeList.addAll(popularRecipes);
+
+                recipeAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<PopularRecipesResponse> call, Throwable t) {
+                Log.d(LOG_TAG, t.getLocalizedMessage());
             }
         });
     }
