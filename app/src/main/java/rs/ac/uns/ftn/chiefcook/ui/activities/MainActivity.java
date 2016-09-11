@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Set a Toolbar to replace the ActionBar.
         setSupportActionBar(toolbar);
+
+        // flags required to draw behind the status bar (API 19+)
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         drawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
